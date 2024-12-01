@@ -1,0 +1,237 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0; /* Light Grey Background */
+    display: flex;
+    justify-content: flex-start; /* Align form to the left */
+    align-items: flex-start;
+    height: 100vh;
+    padding: 0 20px;
+}
+
+.navbar {
+    background: linear-gradient(90deg, #28a745, #20c997);
+    color: white;
+    padding: 15px 20px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    text-transform: uppercase;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.register-container {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
+    margin-top: 80px; /* To ensure the form doesn't overlap the navbar */
+}
+
+h2 {
+    text-align: left;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #218838;
+}
+
+.links {
+    margin-top: 10px;
+    text-align: left;
+}
+
+.links a {
+    color: #28a745;
+    text-decoration: none;
+}
+
+.links a:hover {
+    text-decoration: underline;
+}
+
+.footer {
+    background-color: #f1f1f1;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+
+
+.select-box {
+    position: relative;
+
+    width: 26rem;
+}
+
+.select-box input {
+    width: 90%;
+    padding: 1rem .6rem;
+    font-size: 1.1rem;
+    
+    border: .1rem solid transparent;
+    outline: none;
+}
+
+input[type="tel"] {
+    border-radius: 0 .5rem .5rem 0;
+    background: #dce1e1;
+}
+
+.select-box input:focus {
+    border: .1rem solid var(--primary);
+}
+
+.selected-option {
+    background-color: #eee;
+    border-radius: .5rem;
+    overflow: hidden;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.selected-option div{
+    position: relative;
+
+    width: 6rem;
+    padding: 0 2.8rem 0 .5rem;
+    text-align: center;
+    cursor: pointer;
+}
+
+.selected-option div::after{
+    position: absolute;
+    content: "";
+    right: .8rem;
+    top: 50%;
+    transform: translateY(-50%) rotate(45deg);
+    
+    width: .8rem;
+    height: .8rem;
+    border-right: .12rem solid var(--primary);
+    border-bottom: .12rem solid var(--primary);
+
+    transition: .2s;
+}
+
+.selected-option div.active::after{
+    transform: translateY(-50%) rotate(225deg);
+}
+
+.select-box .options {
+    position: absolute;
+    top: 4rem;
+    
+    width: 100%;
+    background-color: #fff;
+    border-radius: .5rem;
+
+    display: none;
+}
+
+.select-box .options.active {
+    display: block;
+}
+
+.select-box .options::before {
+    position: absolute;
+    content: "";
+    left: 1rem;
+    top: -1.2rem;
+
+    width: 0;
+    height: 0;
+    border: .6rem solid transparent;
+    border-bottom-color: var(--primary);
+}
+
+input.search-box {
+    background-color: rgb(209, 205, 205);
+    color: #000000;
+    border-radius: .5rem .5rem 0 0;
+    padding: 1.4rem 1rem;
+}
+
+.select-box ol {
+    list-style: none;
+    max-height: 6rem;
+    overflow: overlay;
+}
+
+.select-box ol::-webkit-scrollbar {
+    width: 0.6rem;
+}
+
+.select-box ol::-webkit-scrollbar-thumb {
+    width: 0.4rem;
+    height: 3rem;
+    background-color: #ccc;
+    border-radius: .4rem;
+}
+
+.select-box ol li {
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.select-box ol li.hide {
+    display: none;
+}
+
+.select-box ol li:not(:last-child) {
+    border-bottom: .1rem solid #eee;
+}
+
+.select-box ol li:hover {
+    background-color: lightcyan;
+}
+
+.select-box ol li .country-name {
+    margin-left: .4rem;
+}
