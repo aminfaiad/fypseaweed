@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Seaweed Management System - Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div id="farmStatus" class="status-indicator">Checking...</div>
+        <h2>Environmental Monitoring Dashboard</h2>
+        <div class="time-range-selector">
+            <label for="timeRange">Select Time Range:</label>
+            <select id="timeRange">
+                <option value="hours">Hours</option>
+                <option value="days" selected>Days</option>
+                <option value="weeks">Weeks</option>
+                <option value="months">Months</option>
+            </select>
+        </div>
+        <div class="cards-container">
+            <div class="card">
+                <h3>Salinity (ppt)</h3>
+                <canvas id="salinityChart"></canvas>
+                <p class="current-value">Current Value: <span id="salinityValue">-</span></p>
+            </div>
+            <div class="card">
+                <h3>pH Level</h3>
+                <canvas id="phChart"></canvas>
+                <p class="current-value">Current Value: <span id="phValue">-</span></p>
+            </div>
+            <div class="card">
+                <h3>Temperature (°C)</h3>
+                <canvas id="temperatureChart"></canvas>
+                <p class="current-value">Current Value: <span id="temperatureValue">-</span></p>
+            </div>
+            <div class="card">
+                <h3>Light Intensity</h3>
+                <canvas id="lightIntensityChart"></canvas>
+                <p class="current-value">Current Value: <span id="lightIntensityValue">-</span></p>
+            </div>
+        </div>
+    </div>
+    <footer>
+        &copy; 2024 Smart Seaweed Management System. All rights reserved. <br>
+        Contact us at: support@seaweed.com <br>
+        Follow us on: 
+        <a href="https://facebook.com" style="color: white;">Facebook</a> | 
+        <a href="https://twitter.com" style="color: white;">Twitter</a> | 
+        <a href="https://instagram.com" style="color: white;">Instagram</a>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
