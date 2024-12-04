@@ -78,4 +78,21 @@ document.addEventListener("DOMContentLoaded", function () {
         chart.data.labels = labels;
         chart.update();
     }
-});
+
+    const currSalinity=document.getElementById("salinityValue");
+    const currpH=document.getElementById("phValue");
+    const currTemp=document.getElementById("temperatureValue");
+    const currLight=document.getElementById("lightIntensityValue");
+    function updateCurrent(){
+        currSalinity.innerHTML=(Math.random()*10 +20).toFixed(0)
+        currpH.innerHTML= (Math.random()*1 +7).toFixed(1)
+        currTemp.innerHTML= (Math.random()*10 +20).toFixed(0)
+        currLight.innerHTML= (Math.random()*100 +200).toFixed(0)
+        setTimeout(updateCurrent,1000);
+    }
+    updateCurrent();
+}
+);
+
+
+
