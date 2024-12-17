@@ -1,9 +1,9 @@
 <?php
 // Database connection settings
 $host = 'localhost'; // Update with your database host
-$dbname = 'seaweed';
-$username = 'admin'; // Update with your database username
-$password = 'admin'; // Update with your database password;
+$dbname = 'seaweed_farming';
+$username = 'seaweedadmin'; // Update with your database username
+$password = 'SeaweedFarmingIot2024'; // Update with your database password;
 
 try {
     // Establish a connection to the database
