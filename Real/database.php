@@ -1,4 +1,7 @@
 <?php
+date_default_timezone_set('Asia/Kuala_Lumpur');
+
+
 // Database connection settings
 $host = 'localhost'; // Update with your database host
 $dbname = 'seaweed_farming';

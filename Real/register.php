@@ -25,7 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Hash the password securely
-        $hashedPassword = password_hash($passwordInput, PASSWORD_BCRYPT);
+        // $hashedPassword = password_hash($passwordInput, PASSWORD_BCRYPT); Using hashedpassword
+        $hashedPassword = $passwordInput;
 
         // Insert the new user into the database
         $stmt = $pdo->prepare("INSERT INTO users (name, email, password) VALUES (:name, :email, :password)");
@@ -35,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($stmt->execute()) {
             echo 'Registration successful.';
+            header("Location: login.php");
         } else {
             echo 'Registration failed.';
         }

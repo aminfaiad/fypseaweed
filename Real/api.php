@@ -1,6 +1,9 @@
 <?php
 require 'database.php'; // Include database connection
 
+
+
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Retrieve input data from the POST request
     $farmToken = trim($_POST['farm_token']);
