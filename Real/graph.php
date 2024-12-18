@@ -18,7 +18,7 @@ new Chart(ctx, {
         labels: ['Point 1', 'Point 2', 'Point 3', 'Point 4', 'Point 5'], // Labels for tooltips
         datasets: [
             {
-                label: 'Sample Data 1', // First line
+                label: 'Min', // First line
                 data: [10, 20, 15, 25, 30], // Data points
                 borderColor: 'rgba(75, 192, 192, 1)', // Line color
                 backgroundColor: 'rgba(75, 192, 192, 0.2)', // Area under line
@@ -30,7 +30,7 @@ new Chart(ctx, {
                 tension: 0.4 // Line smoothness
             },
             {
-                label: 'Sample Data 2', // Second line
+                label: 'Average', // Second line
                 data: [15, 10, 20, 30, 25], // Data points
                 borderColor: 'rgba(255, 99, 132, 1)', // Line color
                 backgroundColor: 'rgba(255, 99, 132, 0.2)', // Area under line
@@ -42,7 +42,7 @@ new Chart(ctx, {
                 tension: 0.4 // Line smoothness
             },
             {
-                label: 'Sample Data 3', // Third line
+                label: 'Max', // Third line
                 data: [5, 15, 10, 20, 35], // Data points
                 borderColor: 'rgba(54, 162, 235, 1)', // Line color
                 backgroundColor: 'rgba(54, 162, 235, 0.2)', // Area under line
@@ -58,6 +58,17 @@ new Chart(ctx, {
     options: {
         responsive: true, // Make chart responsive
         plugins: {
+            title: { // Title plugin configuration
+                display: true, // Enable title
+                text: 'My Line Chart Example', // Title text
+                font: {
+                    size: 18 // Title font size
+                },
+                padding: {
+                    top: 10,
+                    bottom: 20
+                }
+            },
             tooltip: { // Tooltip configuration
                 enabled: true, // Enable tooltips
                 callbacks: {
@@ -85,6 +96,7 @@ new Chart(ctx, {
         }
     }
 });
+
 
     </script>
 </body>
