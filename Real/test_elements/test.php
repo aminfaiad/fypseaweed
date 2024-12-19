@@ -22,12 +22,17 @@
         /* Navbar Styling */
         .navbar {
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             align-items: center;
             height: 50px;
             background-color: #333;
             color: white;
             padding: 0 20px;
+        }
+
+        .navbar .title {
+            font-size: 18px;
+            font-weight: bold;
         }
 
         .navbar a {
@@ -60,12 +65,41 @@
             margin-bottom: 10px;
         }
 
+        .sidebar .farm {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #dfe6e9;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .sidebar .farm:hover {
+            background-color: #b2bec3;
+            transform: scale(1.05);
+        }
+
+        .sidebar .delete-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #d63031;
+        }
+
+        .sidebar .delete-btn:hover {
+            color: #e74c3c;
+        }
+
         .sidebar button {
             padding: 10px;
             background-color: #007bff;
             color: white;
             border: none;
             cursor: pointer;
+            border-radius: 5px;
         }
 
         .sidebar button:hover {
@@ -82,8 +116,11 @@
 <body>
     <!-- Top Navigation Bar -->
     <div class="navbar">
-        <a href="settings.php">Settings</a>
-        <a href="logout.php">Logout</a>
+        <div class="title">Select a Farm</div>
+        <div>
+            <a href="settings.php">Settings</a>
+            <a href="logout.php">Logout</a>
+        </div>
     </div>
 
     <!-- Main Container -->
@@ -91,8 +128,14 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <h3>Farms</h3>
-            <div>Farm 1</div>
-            <div>Farm 2</div>
+            <div class="farm">
+                <span onclick="updateTitle('Farm 1')">Farm 1</span>
+                <button class="delete-btn" onclick="deleteFarm(this, 'Farm 1')">🗑</button>
+            </div>
+            <div class="farm">
+                <span onclick="updateTitle('Farm 2')">Farm 2</span>
+                <button class="delete-btn" onclick="deleteFarm(this, 'Farm 2')">🗑</button>
+            </div>
             <button onclick="addFarm()">Add Farm</button>
         </div>
 
@@ -102,11 +145,51 @@
 
     <!-- Script -->
     <script>
+        let farmCounter = 3; // Counter to create unique farm names
+
+        function updateTitle(farmName) {
+            const title = document.querySelector('.navbar .title');
+            title.textContent = farmName;
+        }
+
+        function deleteFarm(button, farmName) {
+            if (confirm(`Are you sure you want to delete ${farmName}?`)) {
+                const farmDiv = button.parentElement;
+                farmDiv.remove();
+                const title = document.querySelector('.navbar .title');
+                if (title.textContent === farmName) {
+                    title.textContent = "Select a Farm";
+                }
+            }
+        }
+
         function addFarm() {
             const sidebar = document.querySelector('.sidebar');
+
+            // Create the new farm container div
             const newFarm = document.createElement('div');
-            newFarm.textContent = 'New Farm';
+            newFarm.className = 'farm';
+
+            // Create the span for the farm name
+            const farmName = `Farm ${farmCounter}`;
+            const farmSpan = document.createElement('span');
+            farmSpan.textContent = farmName;
+            farmSpan.onclick = () => updateTitle(farmName);
+
+            // Create the delete button
+            const deleteButton = document.createElement('button');
+            deleteButton.className = 'delete-btn';
+            deleteButton.innerHTML = '🗑';
+            deleteButton.onclick = () => deleteFarm(deleteButton, farmName);
+
+            // Add the span and delete button to the farm div
+            newFarm.appendChild(farmSpan);
+            newFarm.appendChild(deleteButton);
+
+            // Insert the new farm above the Add Farm button
             sidebar.insertBefore(newFarm, sidebar.querySelector('button'));
+
+            farmCounter++;
         }
     </script>
 </body>
