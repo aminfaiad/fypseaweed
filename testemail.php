@@ -7,8 +7,7 @@ require '/var/www/html/phplib/vendor/autoload.php'; // Updated vendor path
 // Create a new PHPMailer instance
 $mail = new PHPMailer(true);
 
-$message = 'Subject: Your Registration Code' . PHP_EOL . PHP_EOL .
-           'This is an automated message.' . PHP_EOL . PHP_EOL .
+$message = 'This is an automated message.' . PHP_EOL . PHP_EOL .
            'Your registration code is: 934920' . PHP_EOL . PHP_EOL .
            'Please enter this code within the next 10 minutes to proceed.' . PHP_EOL . PHP_EOL .
            'If you did not request this code, no further action is required.' . PHP_EOL . PHP_EOL .
