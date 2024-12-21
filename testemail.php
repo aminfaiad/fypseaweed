@@ -7,6 +7,16 @@ require '/var/www/html/phplib/vendor/autoload.php'; // Updated vendor path
 // Create a new PHPMailer instance
 $mail = new PHPMailer(true);
 
+$message = 'Subject: Your Registration Code' . PHP_EOL . PHP_EOL .
+           'This is an automated message.' . PHP_EOL . PHP_EOL .
+           'Your registration code is: 934920' . PHP_EOL . PHP_EOL .
+           'Please enter this code within the next 10 minutes to proceed.' . PHP_EOL . PHP_EOL .
+           'If you did not request this code, no further action is required.' . PHP_EOL . PHP_EOL .
+           'Smartseaweed.site';
+
+
+
+
 try {
     // SMTP Configuration
     $mail->isSMTP();
@@ -21,7 +31,8 @@ try {
     $mail->setFrom('support@smartseaweed.site', 'Smart Seaweed Support'); // Sender
     $mail->addAddress('amin.fauad@student.aiu.edu.my');    // Recipient
     $mail->Subject = 'Verification code for registration';                                     // Subject
-    $mail->Body = 'Please enter this registration code within 10 minutes : 934920'; // Email body
+    //$mail->Body = 'Please enter this registration code within 10 minutes : 934920'; // Email body
+    $mail->Body = $message; // Email body
 
     // Send the email
     $mail->send();
