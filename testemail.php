@@ -19,9 +19,9 @@ try {
 
     // Email settings
     $mail->setFrom('support@smartseaweed.site', 'Smart Seaweed Support'); // Sender
-    $mail->addAddress('amin.fauad@student.aiu.edu.my', 'Amin Fauad');    // Recipient
-    $mail->Subject = 'Hello World';                                     // Subject
-    $mail->Body = 'Hello World! This is a test email from Smart Seaweed.'; // Email body
+    $mail->addAddress('amin.fauad@student.aiu.edu.my');    // Recipient
+    $mail->Subject = 'Verification code for registration';                                     // Subject
+    $mail->Body = 'Please enter this registration code within 10 minutes : 934920'; // Email body
 
     // Send the email
     $mail->send();
