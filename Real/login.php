@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <!-- Navigation Bar -->
     <div class="navbar">
-        Smart Seasssweed
+        Smart Seaweed
     </div>
 
     <!-- Login Form -->

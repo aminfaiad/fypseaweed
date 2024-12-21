@@ -116,17 +116,62 @@ function renderChart(data, label, title, min, max) {
 }
 
 
-let currtemperatureData = (Math.random() * 10 + 20).toFixed(1)
-let currphData = (Math.random() * 2 + 6).toFixed(1)
-let currsalinityData = (Math.random() * 5 + 30).toFixed(1)
-let currlightData = (Math.random() * 500 + 1000).toFixed(0)
+// Initialize variables
+let currtemperatureData;
+let currphData;
+let currsalinityData;
+let currlightData;
+
+// Function to fetch data
+async function fetchData() {
+    try {
+        const response = await fetch('http://localhost/Real/get_data.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                'farm_token': 'testtoken',
+                'farm_range': 'current',
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const jsonData = await response.json();
+
+        if (jsonData.status === 'success') {
+            const data = jsonData.data;
+            currtemperatureData = parseFloat(data.temperature);
+            currphData = parseFloat(data.ph_value);
+            currsalinityData = parseFloat(data.salinity);
+            currlightData = parseFloat(data.light_intensity);
+
+            console.log('Temperature:', currtemperatureData);
+            console.log('pH:', currphData);
+            console.log('Salinity:', currsalinityData);
+            console.log('Light Intensity:', currlightData);
+        } else {
+            console.error('Failed to fetch data:', jsonData);
+            return "offline"
+        }
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
+// Call the function
 
 
-function updateValues(){
-    let currtemperatureData = (Math.random() * 10 + 20).toFixed(1)
-    let currphData = (Math.random() * 2 + 6).toFixed(1)
-    let currsalinityData = (Math.random() * 5 + 30).toFixed(1)
-    let currlightData = (Math.random() * 500 + 1000).toFixed(0)
+
+async function updateValues(){
+    //let currtemperatureData = (Math.random() * 10 + 20).toFixed(1)
+    //let currphData = (Math.random() * 2 + 6).toFixed(1)
+    //let currsalinityData = (Math.random() * 5 + 30).toFixed(1)
+    //let currlightData = (Math.random() * 500 + 1000).toFixed(0)
+    await fetchData();
     temperatureElement.textContent = `${currtemperatureData}°C`;
     phElement.textContent = `pH: ${currphData}`;
     salinityElement.textContent = `Salinity: ${currsalinityData} ppt`;
