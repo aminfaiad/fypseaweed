@@ -18,8 +18,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['status' => 'error', 'message' => 'All fields are required.']);
         exit;
     }
-
     try {
+        // Check if the farm exists
+        $checkFarmStmt = $pdo->prepare("SELECT COUNT(*) AS farm_exists FROM farms WHERE farm_token = :farm_token");
+        $checkFarmStmt->bindParam(':farm_token', $farmToken);
+        $checkFarmStmt->execute();
+        $farmExists = $checkFarmStmt->fetch(PDO::FETCH_ASSOC)['farm_exists'];
+
+        if (!$farmExists) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid farm.']);
+            exit;
+        }
+    
+
+    
         // Insert data into farm_data table
         $stmt = $pdo->prepare("INSERT INTO farm_data (farm_token, ph_value, temperature, salinity, light_intensity, time) 
                                VALUES (:farm_token, :ph_value, :temperature, :salinity, :light_intensity, :time)");
