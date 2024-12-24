@@ -22,6 +22,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
+        // Handle 'current' range
+        if ($farmRange === 'current') {
+            // Calculate the time threshold in PHP
+            $dateTime = new DateTime();
+            $dateTime->modify('-30 seconds');
+            $timeThreshold = $dateTime->format('Y-m-d H:i:s');
+
+            $stmt = $pdo->prepare("SELECT ph_value, temperature, salinity, light_intensity 
+                                   FROM farm_data 
+                                   WHERE farm_token = :farm_token AND time >= :time_threshold
+                                   ORDER BY time DESC 
+                                   LIMIT 1");
+            $stmt->bindParam(':farm_token', $farmToken);
+            $stmt->bindParam(':time_threshold', $timeThreshold);
+            $stmt->execute();
+            $latestData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($latestData) {
+                echo json_encode(['status' => 'success', 'data' => $latestData]);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'No recent data found.']);
+            }
+            exit;
+        }
+
         // Define range intervals
         $intervals = [
             'day' => ['duration' => '-1 day'],
