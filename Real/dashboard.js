@@ -125,13 +125,13 @@ let currlightData;
 // Function to fetch data
 async function fetchData() {
     try {
-        const response = await fetch('http://localhost/Real/get_data.php', {
+        const response = await fetch('https://smartseaweed.site/Real/get_data.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
             body: new URLSearchParams({
-                'farm_token': 'testtoken',
+                'farm_token': 'test',
                 'farm_range': 'current',
             }),
         });
