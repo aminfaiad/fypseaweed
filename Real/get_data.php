@@ -24,12 +24,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Handle 'current' range
         if ($farmRange === 'current') {
+            // Calculate the time threshold in PHP
+            $dateTime = new DateTime();
+            $dateTime->modify('-30 seconds');
+            $timeThreshold = $dateTime->format('Y-m-d H:i:s');
+
             $stmt = $pdo->prepare("SELECT ph_value, temperature, salinity, light_intensity 
                                    FROM farm_data 
-                                   WHERE farm_token = :farm_token AND time >= NOW() - INTERVAL 30 SECOND 
+                                   WHERE farm_token = :farm_token AND time >= :time_threshold
                                    ORDER BY time DESC 
                                    LIMIT 1");
             $stmt->bindParam(':farm_token', $farmToken);
+            $stmt->bindParam(':time_threshold', $timeThreshold);
             $stmt->execute();
             $latestData = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -43,10 +49,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Prepare the range and interval for aggregation
         $intervals = [
-            'day' => ['interval' => '1 HOUR', 'label' => 'HOUR'],
-            'week' => ['interval' => '1 DAY', 'label' => 'DAY'],
-            'month' => ['interval' => '1 WEEK', 'label' => 'WEEK'],
-            'year' => ['interval' => '1 MONTH', 'label' => 'MONTH']
+            'day' => ['interval' => '1 HOUR', 'label' => 'HOUR', 'duration' => '-1 day'],
+            'week' => ['interval' => '1 DAY', 'label' => 'DAY', 'duration' => '-1 week'],
+            'month' => ['interval' => '1 WEEK', 'label' => 'WEEK', 'duration' => '-1 month'],
+            'year' => ['interval' => '1 MONTH', 'label' => 'MONTH', 'duration' => '-1 year']
         ];
 
         if (!isset($intervals[$farmRange])) {
@@ -56,12 +62,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $interval = $intervals[$farmRange]['interval'];
         $label = $intervals[$farmRange]['label'];
-        $timeFrame = [
-            'day' => 'NOW() - INTERVAL 1 DAY',
-            'week' => 'NOW() - INTERVAL 1 WEEK',
-            'month' => 'NOW() - INTERVAL 1 MONTH',
-            'year' => 'NOW() - INTERVAL 1 YEAR'
-        ][$farmRange];
+        $duration = $intervals[$farmRange]['duration'];
+
+        // Calculate the start time for the range in PHP
+        $dateTime = new DateTime();
+        $dateTime->modify($duration);
+        $timeFrame = $dateTime->format('Y-m-d H:i:s');
 
         // Query for aggregated data
         $stmt = $pdo->prepare("SELECT 
@@ -71,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 AVG(salinity) AS avg_salinity, MIN(salinity) AS min_salinity, MAX(salinity) AS max_salinity,
                                 AVG(light_intensity) AS avg_light, MIN(light_intensity) AS min_light, MAX(light_intensity) AS max_light
                                FROM farm_data
-                               WHERE farm_token = :farm_token AND time >= $timeFrame
+                               WHERE farm_token = :farm_token AND time >= :time_frame
                                GROUP BY FLOOR(UNIX_TIMESTAMP(time) / (CASE
                                    WHEN :label = 'HOUR' THEN 3600
                                    WHEN :label = 'DAY' THEN 86400
@@ -80,6 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                END))
                                ORDER BY MIN(time)");
         $stmt->bindParam(':farm_token', $farmToken);
+        $stmt->bindParam(':time_frame', $timeFrame);
         $stmt->bindParam(':label', $label);
         $stmt->execute();
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
