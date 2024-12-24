@@ -24,7 +24,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Handle 'current' range
         if ($farmRange === 'current') {
-            // Calculate the time threshold in PHP
             $dateTime = new DateTime();
             $dateTime->modify('-30 seconds');
             $timeThreshold = $dateTime->format('Y-m-d H:i:s');
@@ -47,12 +46,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        // Prepare the range and interval for aggregation
         $intervals = [
-            'day' => ['interval' => '1 HOUR', 'label' => 'HOUR', 'duration' => '-1 day'],
-            'week' => ['interval' => '1 DAY', 'label' => 'DAY', 'duration' => '-1 week'],
-            'month' => ['interval' => '1 WEEK', 'label' => 'WEEK', 'duration' => '-1 month'],
-            'year' => ['interval' => '1 MONTH', 'label' => 'MONTH', 'duration' => '-1 year']
+            'day' => ['duration' => '-1 day'],
+            'week' => ['duration' => '-1 week'],
+            'month' => ['duration' => '-1 month', 'custom_grouping' => true],
+            'year' => ['duration' => '-1 year', 'custom_grouping' => true]
         ];
 
         if (!isset($intervals[$farmRange])) {
@@ -60,34 +58,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        $interval = $intervals[$farmRange]['interval'];
-        $label = $intervals[$farmRange]['label'];
         $duration = $intervals[$farmRange]['duration'];
 
-        // Calculate the start time for the range in PHP
         $dateTime = new DateTime();
         $dateTime->modify($duration);
         $timeFrame = $dateTime->format('Y-m-d H:i:s');
 
-        // Query for aggregated data
-        $stmt = $pdo->prepare("SELECT 
-                                DATE_FORMAT(MIN(time), '%Y-%m-%d %H:%i:%s') AS time_label,
-                                AVG(ph_value) AS avg_ph, MIN(ph_value) AS min_ph, MAX(ph_value) AS max_ph,
-                                AVG(temperature) AS avg_temp, MIN(temperature) AS min_temp, MAX(temperature) AS max_temp,
-                                AVG(salinity) AS avg_salinity, MIN(salinity) AS min_salinity, MAX(salinity) AS max_salinity,
-                                AVG(light_intensity) AS avg_light, MIN(light_intensity) AS min_light, MAX(light_intensity) AS max_light
-                               FROM farm_data
-                               WHERE farm_token = :farm_token AND time >= :time_frame
-                               GROUP BY FLOOR(UNIX_TIMESTAMP(time) / (CASE
-                                   WHEN :label = 'HOUR' THEN 3600
-                                   WHEN :label = 'DAY' THEN 86400
-                                   WHEN :label = 'WEEK' THEN 604800
-                                   WHEN :label = 'MONTH' THEN 2592000
-                               END))
-                               ORDER BY MIN(time)");
+        $customGrouping = $intervals[$farmRange]['custom_grouping'] ?? false;
+
+        $query = "SELECT 
+                    DATE_FORMAT(time, '%Y-%m-%d %H:%i:%s') AS time_label,
+                    AVG(ph_value) AS avg_ph, MIN(ph_value) AS min_ph, MAX(ph_value) AS max_ph,
+                    AVG(temperature) AS avg_temp, MIN(temperature) AS min_temp, MAX(temperature) AS max_temp,
+                    AVG(salinity) AS avg_salinity, MIN(salinity) AS min_salinity, MAX(salinity) AS max_salinity,
+                    AVG(light_intensity) AS avg_light, MIN(light_intensity) AS min_light, MAX(light_intensity) AS max_light
+                  FROM farm_data
+                  WHERE farm_token = :farm_token AND time >= :time_frame";
+
+        if ($customGrouping && $farmRange === 'month') {
+            $query .= " GROUP BY DATE_SUB(time, INTERVAL MOD(DAYOFMONTH(time) - 1, 7) DAY)";
+        } elseif ($customGrouping && $farmRange === 'year') {
+            $query .= " GROUP BY DATE_FORMAT(time, '%Y-%m-01 00:00:00')";
+        } else {
+            $query .= " GROUP BY FLOOR(UNIX_TIMESTAMP(time) / (CASE 
+                        WHEN :farm_range = 'day' THEN 3600 
+                        WHEN :farm_range = 'week' THEN 86400 
+                      END))";
+        }
+
+        $query .= " ORDER BY time";
+
+        $stmt = $pdo->prepare($query);
         $stmt->bindParam(':farm_token', $farmToken);
         $stmt->bindParam(':time_frame', $timeFrame);
-        $stmt->bindParam(':label', $label);
+        $stmt->bindParam(':farm_range', $farmRange);
         $stmt->execute();
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -96,13 +100,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $time = new DateTime($row['time_label']);
                 switch ($farmRange) {
                     case 'day':
-                        // Round down the minutes and seconds
                         $time->setTime($time->format('H'), 0, 0);
                         break;
                     case 'week':
+                        $time->setTime(0, 0, 0);
+                        break;
                     case 'month':
+                        $time->modify('-' . ($time->format('d') % 7) . ' days');
+                        $time->setTime(0, 0, 0);
+                        break;
                     case 'year':
-                        // Set the time to midnight
+                        $time->modify('first day of this month');
                         $time->setTime(0, 0, 0);
                         break;
                 }
