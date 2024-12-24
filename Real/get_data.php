@@ -92,6 +92,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if ($data) {
+            foreach ($data as &$row) {
+                $time = new DateTime($row['time_label']);
+                switch ($farmRange) {
+                    case 'day':
+                        // Round down the minutes and seconds
+                        $time->setTime($time->format('H'), 0, 0);
+                        break;
+                    case 'week':
+                    case 'month':
+                    case 'year':
+                        // Set the time to midnight
+                        $time->setTime(0, 0, 0);
+                        break;
+                }
+                $row['time_label'] = $time->format('Y-m-d H:i:s');
+            }
+
             $result = [
                 'status' => 'success',
                 'average' => array_map(fn($row) => [
