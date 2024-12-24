@@ -11,7 +11,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        // Check if the farm exists
         $checkFarmStmt = $pdo->prepare("SELECT COUNT(*) AS farm_exists FROM farms WHERE farm_token = :farm_token");
         $checkFarmStmt->bindParam(':farm_token', $farmToken);
         $checkFarmStmt->execute();
@@ -19,30 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (!$farmExists) {
             echo json_encode(['status' => 'error', 'message' => 'Invalid farm.']);
-            exit;
-        }
-
-        // Handle 'current' range
-        if ($farmRange === 'current') {
-            $dateTime = new DateTime();
-            $dateTime->modify('-30 seconds');
-            $timeThreshold = $dateTime->format('Y-m-d H:i:s');
-
-            $stmt = $pdo->prepare("SELECT ph_value, temperature, salinity, light_intensity 
-                                   FROM farm_data 
-                                   WHERE farm_token = :farm_token AND time >= :time_threshold
-                                   ORDER BY time DESC 
-                                   LIMIT 1");
-            $stmt->bindParam(':farm_token', $farmToken);
-            $stmt->bindParam(':time_threshold', $timeThreshold);
-            $stmt->execute();
-            $latestData = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if ($latestData) {
-                echo json_encode(['status' => 'success', 'data' => $latestData]);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'No recent data found.']);
-            }
             exit;
         }
 
@@ -59,11 +34,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $duration = $intervals[$farmRange]['duration'];
-
         $dateTime = new DateTime();
         $dateTime->modify($duration);
         $timeFrame = $dateTime->format('Y-m-d H:i:s');
-
         $customGrouping = $intervals[$farmRange]['custom_grouping'] ?? false;
 
         $query = "SELECT 
@@ -91,7 +64,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare($query);
         $stmt->bindParam(':farm_token', $farmToken);
         $stmt->bindParam(':time_frame', $timeFrame);
-        $stmt->bindParam(':farm_range', $farmRange);
+
+        // Bind only if :farm_range is needed
+        if (!$customGrouping) {
+            $stmt->bindParam(':farm_range', $farmRange);
+        }
+
         $stmt->execute();
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
