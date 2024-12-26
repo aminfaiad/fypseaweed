@@ -1,95 +1,111 @@
-<?php
-session_start();
-require 'database.php'; // Include database connection
-//print_r($_SERVER);
-if  (isset($_SESSION['user_id'])){
-    header("Location: dashboard.php");
-            exit;
-}
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = trim($_POST['email']);
-    $passwordInput = trim($_POST['password']);
-    
-    try {  
-        // Prepare the SQL statement
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
-        $stmt->bindParam(':email', $email);
-        $stmt->execute();
-
-        // Fetch the user record
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        //if ($user && password_verify($passwordInput, $user['password'])) {
-        if ($user && $passwordInput== $user['password']) {
-            // Login successful, redirect to dashboard
-            $_SESSION['user_id'] = $user['user_id']; // Store user ID in session
-            header("Location: dashboard.php");
-            exit;
-        } else {
-            // Login failed, redirect back to login page with error
-            $_SESSION['error'] = 'Invalid email or password';
-            header("Location: login.php");
-            exit;
-        }
-    } catch (Exception $e) {
-        // Handle query errors
-        die("Error: " . $e->getMessage());
-    }
-}
-?>
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Login Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background: #fff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        .login-container h2 {
+            margin: 0 0 20px;
+            font-size: 24px;
+            color: #333;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #555;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .form-group input:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+        .btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <div class="navbar">
-        Smart Seaweed
-    </div>
 
-    <!-- Login Form -->
     <div class="login-container">
         <h2>Login</h2>
-        <form action="/Real/login.php" method="POST" onsubmit="return validateForm()">
+        <form id="loginForm">
             <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter username" required>
             </div>
             <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter password" required>
             </div>
             <button type="submit" class="btn">Login</button>
+            <div class="error" id="errorMessage">Invalid username or password</div>
         </form>
-        <div class="links">
-            <p><a href="forgot.php">Forgot Password?</a></p>
-            <p><a href="register.php">Register here</a></p>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="footer">
-        &copy; 2024 Smart Seaweed Project. All Rights Reserved.
     </div>
 
     <script>
-        function validateForm() {
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
+        const loginForm = document.getElementById('loginForm');
+        const errorMessage = document.getElementById('errorMessage');
 
-            if (!email || !password) {
-                alert("Please fill out all fields.");
-                return false;
+        loginForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission
+            
+            // Dummy login validation
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === 'user' && password === 'password') {
+                alert('Login successful!');
+                // Redirect to a new page or perform further actions
+            } else {
+                errorMessage.style.display = 'block';
             }
-            return true;
-        }
+        });
     </script>
+
 </body>
 </html>

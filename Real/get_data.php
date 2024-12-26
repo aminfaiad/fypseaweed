@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $intervals = [
             'day' => ['duration' => '-1 day'],
             'week' => ['duration' => '-1 week'],
-            'month' => ['duration' => '-1 month', 'custom_grouping' => true],
+            'month' => ['duration' => '-3 week', 'custom_grouping' => true],
             'year' => ['duration' => '-1 year', 'custom_grouping' => true]
         ];
 
@@ -67,25 +67,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $customGrouping = $intervals[$farmRange]['custom_grouping'] ?? false;
 
         // Build query
-        $query = "SELECT 
-                    DATE_FORMAT(time, '%Y-%m-%d %H:%i:%s') AS time_label,
+        switch($farmRange){
+            case 'day':
+                $query = "SELECT 
+                    DATE_FORMAT(`time`, '%Y-%m-%d %H:0:0') AS time_label,
                     AVG(ph_value) AS avg_ph, MIN(ph_value) AS min_ph, MAX(ph_value) AS max_ph,
                     AVG(temperature) AS avg_temp, MIN(temperature) AS min_temp, MAX(temperature) AS max_temp,
                     AVG(salinity) AS avg_salinity, MIN(salinity) AS min_salinity, MAX(salinity) AS max_salinity,
                     AVG(light_intensity) AS avg_light, MIN(light_intensity) AS min_light, MAX(light_intensity) AS max_light
                   FROM farm_data
-                  WHERE farm_token = :farm_token AND time >= :time_frame";
-
-        if ($customGrouping && $farmRange === 'month') {
-            $query .= " GROUP BY FLOOR((TO_DAYS(time) - TO_DAYS(DATE_SUB(NOW(), INTERVAL MOD(DAYOFMONTH(NOW()) - 1, 7) DAY))) / 7)";
-        } elseif ($customGrouping && $farmRange === 'year') {
-            $query .= " GROUP BY DATE_FORMAT(time, '%Y-%m-01 00:00:00')";
-        } else {
-            $query .= " GROUP BY FLOOR(UNIX_TIMESTAMP(time) / (CASE 
-                        WHEN :farm_range = 'day' THEN 3600 
-                        WHEN :farm_range = 'week' THEN 86400 
-                      END))";
+                  WHERE farm_token = :farm_token AND `time` >= :time_frame GROUP BY time_label; ";
+                  break;
+            case 'week':
+                $query = "SELECT 
+                    DATE_FORMAT(`time`, '%Y-%m-%d 0:0:0') AS time_label,
+                    AVG(ph_value) AS avg_ph, MIN(ph_value) AS min_ph, MAX(ph_value) AS max_ph,
+                    AVG(temperature) AS avg_temp, MIN(temperature) AS min_temp, MAX(temperature) AS max_temp,
+                    AVG(salinity) AS avg_salinity, MIN(salinity) AS min_salinity, MAX(salinity) AS max_salinity,
+                    AVG(light_intensity) AS avg_light, MIN(light_intensity) AS min_light, MAX(light_intensity) AS max_light
+                  FROM farm_data
+                  WHERE farm_token = :farm_token AND `time` >= :time_frame GROUP BY time_label; ";
+                  break;
+            case 'month':
+                $query = "SELECT 
+                    DATE_FORMAT(FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(`time`)) - UNIX_TIMESTAMP(`time`) % 604800), '%Y-%m-%d 0:0:0') AS time_label,
+                    AVG(ph_value) AS avg_ph, MIN(ph_value) AS min_ph, MAX(ph_value) AS max_ph,
+                    AVG(temperature) AS avg_temp, MIN(temperature) AS min_temp, MAX(temperature) AS max_temp,
+                    AVG(salinity) AS avg_salinity, MIN(salinity) AS min_salinity, MAX(salinity) AS max_salinity,
+                    AVG(light_intensity) AS avg_light, MIN(light_intensity) AS min_light, MAX(light_intensity) AS max_light
+                FROM farm_data
+                WHERE farm_token = :farm_token AND `time` >= :time_frame GROUP BY time_label; ";
+                break;
+            case 'year':
+                $query = "SELECT 
+                    DATE_FORMAT(`time`, '%Y-%m-1 0:0:0') AS time_label,
+                    AVG(ph_value) AS avg_ph, MIN(ph_value) AS min_ph, MAX(ph_value) AS max_ph,
+                    AVG(temperature) AS avg_temp, MIN(temperature) AS min_temp, MAX(temperature) AS max_temp,
+                    AVG(salinity) AS avg_salinity, MIN(salinity) AS min_salinity, MAX(salinity) AS max_salinity,
+                    AVG(light_intensity) AS avg_light, MIN(light_intensity) AS min_light, MAX(light_intensity) AS max_light
+                  FROM farm_data
+                  WHERE farm_token = :farm_token AND `time` >= :time_frame GROUP BY time_label; ";
+                  break;
         }
+            
+
+        
+
+     
+            //$query .= " GROUP BY FLOOR(UNIX_TIMESTAMP(`time`) / (CASE 
+             //           WHEN :farm_range = 'day' THEN 3600 
+              //          WHEN :farm_range = 'week' THEN 86400 
+               //       END))";
+        
 
         $query .= " ORDER BY time";
 
@@ -95,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':time_frame', $timeFrame);
 
         if (!$customGrouping) {
-            $stmt->bindParam(':farm_range', $farmRange);
+            //$stmt->bindParam(':farm_range', $farmRange);
         }
 
         $stmt->execute();
@@ -107,22 +140,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $time = new DateTime($row['time_label']);
                 switch ($farmRange) {
                     case 'day':
-                        $time->setTime($time->format('H'), 0, 0);
+                        //$time->setTime($time->format('H'), 0, 0);
                         break;
                     case 'week':
-                        $time->setTime(0, 0, 0);
+                        //$time->setTime(0, 0, 0);
                         break;
                     case 'month':
                         // Align to the start of the 7-day interval
-                        $startOfInterval = clone $time;
-                        $daysSinceIntervalStart = ($time->format('d') - 1) % 7;
-                        $startOfInterval->modify("-{$daysSinceIntervalStart} days");
-                        $startOfInterval->setTime(0, 0, 0);
-                        $time = $startOfInterval;
+                        //$startOfInterval = clone $time;
+                        //$daysSinceIntervalStart = ($time->format('d') - 1) % 7;
+                        //$startOfInterval->modify("-{$daysSinceIntervalStart} days");
+                        //$startOfInterval->setTime(0, 0, 0);
+                        //$time = $startOfInterval;
                         break;
                     case 'year':
-                        $time->modify('first day of this month');
-                        $time->setTime(0, 0, 0);
+                        //$time->modify('first day of this month');
+                        //$time->setTime(0, 0, 0);
                         break;
                 }
                 $row['time_label'] = $time->format('Y-m-d H:i:s');

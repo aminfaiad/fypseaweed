@@ -9,9 +9,9 @@ import requests
 
 import sys
 
-#orig_stdout = sys.stdout
-#f = open('out.txt', 'w')
-#sys.stdout = f
+orig_stdout = sys.stdout
+f = open('out.txt', 'w')
+sys.stdout = f
 
 
 
@@ -19,11 +19,18 @@ fromtime = -31536000
 
 
 def createsql():
+    global fromtime
+    orig_stdout = sys.stdout
+    f = open('out.txt', 'w')
+    sys.stdout = f
+    print("insert into farm_data(farm_token,ph_value,temperature,salinity,light_intensity,time) values")
     while fromtime < 0 :
         datime = datetime.datetime.now(datetime.timezone(datetime.timedelta(seconds=28800))) + datetime.timedelta(seconds=fromtime)
         strtime = datime.strftime("%Y-%m-%d  %H:%M:%S")
         print(f"""("testtoken", """ ,random.randint(0,20) , "," ,  random.randint(20,40) ,"," ,random.randint(40,60),",",random.randint(80,100), ","  ,"'"  +strtime  + "')" , ",")
         fromtime += 60
+    print(f"""("testtoken", """ ,random.randint(0,20) , "," ,  random.randint(20,40) ,"," ,random.randint(40,60),",",random.randint(80,100), ","  ,"'"  +strtime  + "')" , ";")
+    sys.stdout = orig_stdout
 
 '''
  $farmToken = trim($_POST['farm_token']);
@@ -35,11 +42,11 @@ def createsql():
 
 #def simulator(url = "https://smartseaweed.site/Real/api.php"):
 def simulator(url = "http://localhost/Real/api.php"):
-    dadata= data={"farm_token" : "d5a939ebbe905437a742cfeff356ee7a" , "ph_value" : random.randint(0,7) , "temperature" : random.randint(28,32)  , "salinity" : random.randint(20,35) , "light_intensity" : random.randint(29,50)}
+    dadata= data={"farm_token" : "73f660a6ef68e8f405b8a6f3cf26413e" , "ph_value" : random.randint(0,7) , "temperature" : random.randint(28,32)  , "salinity" : random.randint(20,35) , "light_intensity" : random.randint(29,50)}
     r = requests.post(url,data=dadata)
     print("Sending:" , dadata)
     print(r.text)
 
-while True:
-    time.sleep(5)
-    simulator()
+#while True:
+#    time.sleep(5)
+#    simulator()
