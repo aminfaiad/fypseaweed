@@ -35,7 +35,7 @@ def createsql():
 
 #def simulator(url = "https://smartseaweed.site/Real/api.php"):
 def simulator(url = "http://localhost/Real/api.php"):
-    dadata= data={"farm_token" : "testtoken" , "ph_value" : random.randint(0,7) , "temperature" : random.randint(28,32)  , "salinity" : random.randint(20,35) , "light_intensity" : random.randint(29,50)}
+    dadata= data={"farm_token" : "d5a939ebbe905437a742cfeff356ee7a" , "ph_value" : random.randint(0,7) , "temperature" : random.randint(28,32)  , "salinity" : random.randint(20,35) , "light_intensity" : random.randint(29,50)}
     r = requests.post(url,data=dadata)
     print("Sending:" , dadata)
     print(r.text)
