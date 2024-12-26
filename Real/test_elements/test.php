@@ -1,3 +1,14 @@
+<?php
+session_start();
+require 'database.php'; // Include database connection
+//print_r($_SERVER);
+$_SESSION['user_id'] = 2;
+if  (!isset($_SESSION['user_id'])){
+    header("Location: login.php");
+            exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -128,15 +139,8 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <h3>Farms</h3>
-            <div onclick="updateTitle('Farm 1')" class="farm">
-                <span onclick="updateTitle('Farm 1')">Farm 1</span>
-                <button class="delete-btn" onclick="deleteFarm(this, 'Farm 1')">🗑</button>
-            </div>
-            <div class="farm">
-                <span onclick="updateTitle('Farm 2')">Farm 2</span>
-                <button class="delete-btn" onclick="deleteFarm(this, 'Farm 2')">🗑</button>
-            </div>
-            <button id= "addfarm-button" onclick="addFarm()">Add Farm</button>
+            
+            <button id= "addfarm-button" onclick="addNewFarm()">Add Farm</button>
         </div>
 
         <!-- Content Area -->
@@ -145,16 +149,65 @@
 
     <!-- Script -->
     <script>
-        let farmCounter = 3; // Counter to create unique farm names
+        let firstFarm;
+        let farmName;
+        let farmToken;
+        async function fetchFarmData() {
+            const farm_list = document.getElementsByClassName("farm");
+            const farmsArray = Array.from(farm_list);
+
+            farmsArray.forEach(farm => farm.remove());
+
+            try {
+                // Fetch farm data from the backend
+                const response = await fetch('get_farm.php', {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch farm data');
+                }
+
+                farmsData = await response.json();
+
+                // Extract the first farm's details
+                firstFarm = farmsData.farms[0];
+                farmName = firstFarm.name;       // Extract name
+                farmToken = firstFarm.farm_token; // Extract token
+                
+                for(let i=0;i<farmsData.farms.length;i++){
+                    console.log(i)
+                    addFarm(farmsData.farms[i].name,farmsData.farms[i].farm_token);
+                }
+                // Update the dashboard with farm name and token
+                document.querySelector("h1").innerText = farmName.charAt(0).toUpperCase() + farmName.slice(1);
+                document.getElementById("tokenvalue").innerText = farmToken;
+
+                // Pass the token to the fetchData function for live updates
+                fetchData(farmToken);
+                fetchImage(farmToken);
+            } catch (error) {
+                console.error('Error fetching farm data:', error);
+                document.getElementById("status-bar").innerText = "Error fetching farm data";
+            }
+        }
 
         function updateTitle(farmName) {
             const title = document.querySelector('.navbar .title');
             title.textContent = farmName;
         }
 
-        function deleteFarm(button, farmName) {
+        async function deleteFarm(button, farmName) {
             if (confirm(`Are you sure you want to delete ${farmName}?`)) {
                 const farmDiv = button.parentElement;
+
+                const response = await fetch('del_farm.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: `farm_token=${encodeURIComponent(farmDiv.farm_token)}` 
+                });
+                
                 farmDiv.remove();
                 const title = document.querySelector('.navbar .title');
                 if (title.textContent === farmName) {
@@ -163,17 +216,18 @@
             }
         }
 
-        function addFarm() {
+        function addFarm(name,token) {
             const sidebar = document.querySelector('.sidebar');
 
             // Create the new farm container div
             const newFarm = document.createElement('div');
             newFarm.className = 'farm';
-            newFarm.setAttribute("onclick","updateTitle('Farm 1')")
-            newFarm.abcd = "updateTitle('Farm 1')"
+            newFarm.setAttribute("onclick",`updateTitle('${name}')`)
+            newFarm.farm_name = `${name}`;
+            newFarm.farm_token = `${token}`;
 
             // Create the span for the farm name
-            const farmName = `Farm ${farmCounter}`;
+            const farmName = `${name}`;
             const farmSpan = document.createElement('span');
             farmSpan.textContent = farmName;
             farmSpan.onclick = () => updateTitle(farmName);
@@ -190,9 +244,19 @@
 
             // Insert the new farm above the Add Farm button
             sidebar.insertBefore(newFarm, sidebar.querySelector('#addfarm-button'));
-
-            farmCounter++;
         }
+
+        async function addNewFarm(){
+            const response = await fetch('add_farm.php', {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+            if (response.ok){
+                await fetchFarmData();
+            }
+        }
+        
+        document.addEventListener("DOMContentLoaded", fetchFarmData);
         
     </script>
 </body>
