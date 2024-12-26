@@ -57,17 +57,17 @@ try {
             throw new Exception('Unsupported image type.');
     }
 
-        // Temporarily save the converted PNG for hashing
-        $tempPath = tempnam(sys_get_temp_dir(), 'img_') . '.png';
-        if (!imagepng($image, $tempPath)) {
-            throw new Exception('Failed to convert image to PNG.');
+        // Temporarily save the converted WebP for hashing
+        $tempPath = tempnam(sys_get_temp_dir(), 'img_') . '.webp';
+        if (!imagewebp($image, $tempPath, 90)) {
+            throw new Exception('Failed to convert image to WebP.');
         }
         imagedestroy($image); // Free memory
 
-        // Generate the MD5 hash of the converted PNG file
+        // Generate the MD5 hash of the converted WebP file
         $fileContent = file_get_contents($tempPath);
         $hash = md5($fileContent); // Generate MD5 hash
-        $hashedFileName = $hash . '.png';
+        $hashedFileName = $hash . '.webp';
         $targetPath = $uploadDir . $hashedFileName;
 
         // Move the temporary file to the final destination

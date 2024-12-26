@@ -128,7 +128,7 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <h3>Farms</h3>
-            <div class="farm">
+            <div onclick="updateTitle('Farm 1')" class="farm">
                 <span onclick="updateTitle('Farm 1')">Farm 1</span>
                 <button class="delete-btn" onclick="deleteFarm(this, 'Farm 1')">🗑</button>
             </div>
@@ -136,7 +136,7 @@
                 <span onclick="updateTitle('Farm 2')">Farm 2</span>
                 <button class="delete-btn" onclick="deleteFarm(this, 'Farm 2')">🗑</button>
             </div>
-            <button onclick="addFarm()">Add Farm</button>
+            <button id= "addfarm-button" onclick="addFarm()">Add Farm</button>
         </div>
 
         <!-- Content Area -->
@@ -169,6 +169,8 @@
             // Create the new farm container div
             const newFarm = document.createElement('div');
             newFarm.className = 'farm';
+            newFarm.setAttribute("onclick","updateTitle('Farm 1')")
+            newFarm.abcd = "updateTitle('Farm 1')"
 
             // Create the span for the farm name
             const farmName = `Farm ${farmCounter}`;
@@ -187,10 +189,11 @@
             newFarm.appendChild(deleteButton);
 
             // Insert the new farm above the Add Farm button
-            sidebar.insertBefore(newFarm, sidebar.querySelector('button'));
+            sidebar.insertBefore(newFarm, sidebar.querySelector('#addfarm-button'));
 
             farmCounter++;
         }
+        
     </script>
 </body>
 </html>

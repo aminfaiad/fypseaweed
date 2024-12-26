@@ -1,118 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farm 1</title>
+    <title>Farm 1 Dashboard</title>
     <style>
-        #farm-dashboard-container {
+        :root {
+            --bg-color: #f4f4f9;
+            --primary-color: #4caf50;
+            --secondary-color: #2196f3;
+            --error-color: #f44336;
+            --text-color: #333;
+            --border-radius: 10px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        header {
             text-align: center;
-            margin: 20px;
-            background-color: #f4f4f9;
+            margin-bottom: 20px;
         }
-        #farm-dashboard-container h1 {
-            margin-bottom: 10px;
-            color: #333;
-        }
-        #farm-dashboard-container #farm-token {
+
+        #farm-token {
             font-size: 1.1em;
             color: #666;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
-        #farm-dashboard-container #status-bar {
-            margin-bottom: 20px;
+
+        #status-bar {
+            margin: 10px auto;
+            max-width: 200px;
             padding: 10px;
             color: white;
             font-weight: bold;
             font-size: 1.2em;
-            border-radius: 5px;
+            border-radius: var(--border-radius);
+            text-align: center;
         }
-        #farm-dashboard-container .online {
-            background-color: #4caf50;
+
+        .online {
+            background-color: var(--primary-color);
         }
-        #farm-dashboard-container .offline {
-            background-color: #f44336;
+
+        .offline {
+            background-color: var(--error-color);
         }
-        #farm-dashboard-container .data-container {
-            display: inline-block;
-            text-align: left;
+
+        #farm-dashboard-container {
+            margin: 20px auto;
+            max-width: 1200px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        #sensor-data-container {
+            flex: 1;
             background: white;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 300px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
         }
-        #farm-dashboard-container .data-item {
-            margin: 15px 0;
-        }
-        #farm-dashboard-container .label {
+
+        .section-title {
+            font-size: 1.2em;
             font-weight: bold;
-            margin-bottom: 5px;
-            display: block;
+            margin-bottom: 15px;
+            text-align: left;
         }
-        #farm-dashboard-container .meter-container {
+
+        .data-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .data-item {
+            flex: 1 1 calc(50% - 20px);
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 15px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .label {
+            font-weight: bold;
+        }
+
+        .meter-container {
             position: relative;
-            width: 100%;
             height: 20px;
             background-color: #ddd;
-            border-radius: 10px;
+            border-radius: var(--border-radius);
             overflow: hidden;
         }
-        #farm-dashboard-container .meter-fill {
+
+        .meter-fill {
             height: 100%;
             width: 0;
-            background-color: #2196f3;
+            background-color: var(--secondary-color);
             transition: width 0.3s ease, background-color 0.3s ease;
         }
-        #farm-dashboard-container .out-of-range {
-            background-color: #f44336;
+
+        .out-of-range {
+            background-color: var(--error-color);
+        }
+
+        #image-container {
+            flex: 0 1 auto;
+            background: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        #image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        @media (max-width: 768px) {
+            .data-item {
+                flex: 1 1 100%;
+            }
         }
     </style>
 </head>
-<body>
-    <div id="farm-dashboard-container" class="farm-dashboard">
-        <h1>Farm 1</h1>
-        <div id="farm-token">Farm Token: testtoken</div>
-        <div id="status-bar" class="status-bar offline">Offline</div>
 
-        <div class="data-container">
-            <div class="data-item">
-                <span class="label">pH:</span>
-                <div class="meter-container">
-                    <div id="ph-meter" class="meter-fill"></div>
+<body>
+    <header>
+        <h1>Farm 1 Dashboard</h1>
+        <p id="farm-token">Farm Token: <strong><span id="tokenvalue">testtoken</span></strong></p>
+        <div id="status-bar" class="status-bar offline" aria-live="polite">Offline</div>
+    </header>
+
+    <div id="farm-dashboard-container">
+        <main id="sensor-data-container">
+            <h2 class="section-title">Live sensor data:</h2>
+            <section class="data-container">
+                <div class="data-item" aria-label="pH Level">
+                    <span class="label">pH:</span>
+                    <div class="meter-container">
+                        <div id="ph-meter" class="meter-fill" role="progressbar" aria-valuenow="0" aria-valuemin="0"
+                            aria-valuemax="14"></div>
+                    </div>
+                    <span id="ph-value">-</span>
                 </div>
-                <span id="ph-value">-</span>
-            </div>
-            <div class="data-item">
-                <span class="label">Salinity (ppt):</span>
-                <div class="meter-container">
-                    <div id="salinity-meter" class="meter-fill"></div>
+                <div class="data-item" aria-label="Salinity Level">
+                    <span class="label">Salinity (ppt):</span>
+                    <div class="meter-container">
+                        <div id="salinity-meter" class="meter-fill" role="progressbar" aria-valuenow="0"
+                            aria-valuemin="0" aria-valuemax="50"></div>
+                    </div>
+                    <span id="salinity-value">-</span>
                 </div>
-                <span id="salinity-value">-</span>
-            </div>
-            <div class="data-item">
-                <span class="label">Temperature (°C):</span>
-                <div class="meter-container">
-                    <div id="temperature-meter" class="meter-fill"></div>
+                <div class="data-item" aria-label="Temperature">
+                    <span class="label">Temperature (°C):</span>
+                    <div class="meter-container">
+                        <div id="temperature-meter" class="meter-fill" role="progressbar" aria-valuenow="0"
+                            aria-valuemin="-50" aria-valuemax="50"></div>
+                    </div>
+                    <span id="temperature-value">-</span>
                 </div>
-                <span id="temperature-value">-</span>
-            </div>
-            <div class="data-item">
-                <span class="label">Light Intensity (lux):</span>
-                <div class="meter-container">
-                    <div id="light-intensity-meter" class="meter-fill"></div>
+                <div class="data-item" aria-label="Light Intensity">
+                    <span class="label">Light Intensity (lux):</span>
+                    <div class="meter-container">
+                        <div id="light-intensity-meter" class="meter-fill" role="progressbar" aria-valuenow="0"
+                            aria-valuemin="0" aria-valuemax="1000"></div>
+                    </div>
+                    <span id="light-intensity-value">-</span>
                 </div>
-                <span id="light-intensity-value">-</span>
-            </div>
-            <div class="data-item">
-                <span class="label">Water Level (cm):</span>
-                <div class="meter-container">
-                    <div id="water-level-meter" class="meter-fill"></div>
+                <div class="data-item" aria-label="Water Level">
+                    <span class="label">Water Level (cm):</span>
+                    <div class="meter-container">
+                        <div id="water-level-meter" class="meter-fill" role="progressbar" aria-valuenow="0"
+                            aria-valuemin="0" aria-valuemax="200"></div>
+                    </div>
+                    <span id="water-level-value">-</span>
                 </div>
-                <span id="water-level-value">-</span>
-            </div>
-        </div>
+            </section>
+        </main>
+
+        <aside id="image-container">
+            <h2 class="section-title">Latest image:</h2>
+            <img src="image.webp" alt="Farm Overview Image">
+        </aside>
     </div>
 
     <script>
@@ -120,14 +205,12 @@
             try {
                 const response = await fetch('get_data.php', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: 'farm_token=testtoken&farm_range=current',
                 });
                 const data = await response.json();
 
-                const statusBar = document.getElementById('status-bar');
+                updateStatus(data.status === 'success' ? 'online' : 'offline');
 
                 if (data.status === 'success') {
                     updateMeter('ph', data.data.ph_value, 14, 5, 9);
@@ -135,18 +218,21 @@
                     updateMeter('temperature', data.data.temperature, 50, -Infinity, 32);
                     updateMeter('light-intensity', data.data.light_intensity, 1000);
                     updateMeter('water-level', data.data.water_level || 0, 200);
-
-                    statusBar.className = 'status-bar online';
-                    statusBar.innerText = 'Online';
                 } else {
                     resetMeters();
-                    statusBar.className = 'status-bar offline';
-                    statusBar.innerText = 'Offline';
                 }
-            } catch (error) {
-                console.error('Error fetching data:', error);
+            } catch {
+                updateStatus('offline');
                 resetMeters();
-                const statusBar = document.getElementById('status-bar');
+            }
+        }
+
+        function updateStatus(status) {
+            const statusBar = document.getElementById('status-bar');
+            if (status === 'online') {
+                statusBar.className = 'status-bar online';
+                statusBar.innerText = 'Online';
+            } else {
                 statusBar.className = 'status-bar offline';
                 statusBar.innerText = 'Offline';
             }
@@ -159,12 +245,10 @@
             meterFill.style.width = `${percentage}%`;
             meterValue.innerText = value;
 
-            if (minOptimal !== null && maxOptimal !== null) {
-                if (value < minOptimal || value > maxOptimal) {
-                    meterFill.classList.add('out-of-range');
-                } else {
-                    meterFill.classList.remove('out-of-range');
-                }
+            meterFill.setAttribute('aria-valuenow', value);
+
+            if (minOptimal !== null && maxOptimal !== null && (value < minOptimal || value > maxOptimal)) {
+                meterFill.classList.add('out-of-range');
             } else {
                 meterFill.classList.remove('out-of-range');
             }
@@ -175,14 +259,15 @@
                 const meterFill = document.getElementById(`${id}-meter`);
                 const meterValue = document.getElementById(`${id}-value`);
                 meterFill.style.width = '0';
+                meterFill.setAttribute('aria-valuenow', '0');
                 meterFill.classList.remove('out-of-range');
                 meterValue.innerText = '-';
             });
         }
 
-        // Fetch data every 5 seconds
         setInterval(fetchData, 5000);
-        fetchData(); // Initial call
+        fetchData();
     </script>
 </body>
+
 </html>

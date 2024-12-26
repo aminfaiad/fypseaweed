@@ -2,6 +2,10 @@
 session_start();
 require 'database.php'; // Include database connection
 //print_r($_SERVER);
+if  (isset($_SESSION['user_id'])){
+    header("Location: dashboard.php");
+            exit;
+}
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
     $passwordInput = trim($_POST['password']);
@@ -18,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         //if ($user && password_verify($passwordInput, $user['password'])) {
         if ($user && $passwordInput== $user['password']) {
             // Login successful, redirect to dashboard
-            $_SESSION['user_id'] = $user['id']; // Store user ID in session
+            $_SESSION['user_id'] = $user['user_id']; // Store user ID in session
             header("Location: dashboard.php");
             exit;
         } else {
