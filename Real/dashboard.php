@@ -462,8 +462,8 @@ if  (!isset($_SESSION['user_id'])){
                 if (!response.ok) {
                     throw new Error('Failed to fetch farm data');
                 }
-                const img_url =json_response.image_path
                 const json_response = await response.json();
+                const img_url =json_response.image_path
                 console.log(json_response)
                 if (json_response.status == "error"){
                     console.log("No image found");
