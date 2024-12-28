@@ -146,7 +146,11 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['token'])) {
         <?php endif; ?>
 
         <?php if ($success): ?>
-            <div class="message success"><?php echo htmlspecialchars($success); ?></div>
+            <div class="message success">
+                <?php echo htmlspecialchars($success); ?>
+                <br>
+                <button onclick="window.location.href='login.php';" style="margin-top: 10px;">Go to Login</button>
+            </div>
         <?php else: ?>
             <?php if (isset($email)): ?>
                 <form action="reset_password.php" method="POST">

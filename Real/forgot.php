@@ -4,6 +4,8 @@ error_reporting(E_ALL);
 require 'database.php';
 require_once 'email_function_send_reset_link.php';
 
+$message = "";
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($_POST['email']);
     
@@ -22,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute([$email, $token, $expiry]);
 
         // Send the reset link via email using the predefined function
-        $resetLink = "https://smartseaweed.com/Real/forgot_pass/reset_password.php?token=" . $token;
+        $resetLink = "https://smartseaweed.site/Real/forgot_pass/reset_password.php?token=" . $token;
         if (sendPasswordResetEmail($email, $resetLink)) {
             $message = "Password reset link has been sent to your email.";
         } else {
@@ -31,6 +33,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $message = "No account found with that email.";
     }
+
+    // Redirect to the same page to clear POST data
+    header("Location: forgot.php?message=" . urlencode($message));
+    exit;
+}
+
+// Retrieve the message from the query string if available
+if (!empty($_GET['message'])) {
+    $message = htmlspecialchars($_GET['message']);
 }
 ?>
 
@@ -102,6 +113,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             font-size: 14px;
             color: #555;
         }
+        .message.error {
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -113,9 +127,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <button type="submit">Submit</button>
         </form>
         <?php if (!empty($message)): ?>
-            <p class="message"><?= htmlspecialchars($message); ?></p>
+            <p class="message <?= (stripos($message, 'Failed') !== false) ? 'error' : ''; ?>">
+                <?= $message; ?>
+            </p>
         <?php endif; ?>
     </div>
 </body>
 </html>
-<?php $message= ""; ?>
