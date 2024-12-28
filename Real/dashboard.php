@@ -467,7 +467,7 @@ if  (!isset($_SESSION['user_id'])){
                 console.log(json_response);
                 if (json_response.status == "error"){
                     console.log("No image found");
-                    document.getElementById("last-image").src= "default.png";
+                    document.getElementById("last-image").src= "uploads/default.png";
                     return;
                 }
                 
