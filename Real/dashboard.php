@@ -227,7 +227,7 @@ if  (!isset($_SESSION['user_id'])){
         }
 
         #image-container {
-            flex: 1 1 auto;
+            flex: 0 1 auto;
             background: white;
             padding: 20px;
             border-radius: var(--border-radius);
@@ -324,7 +324,7 @@ if  (!isset($_SESSION['user_id'])){
 
         <aside id="image-container">
             <h2 class="section-title">Latest image:</h2>
-            <img id="last-image" src="image.webp" alt="Farm Overview Image">
+            <img id="last-image" src="uploads/default.png" alt="Farm Overview Image">
         </aside>
     </div>
         </div>
@@ -373,11 +373,15 @@ if  (!isset($_SESSION['user_id'])){
                 fetchImage(farmToken);
             } catch (error) {
                 console.error('Error fetching farm data:', error);
-                document.getElementById("status-bar").innerText = "Error fetching farm data";
+                //document.getElementById("status-bar").innerText = "Error fetching farm data";
             }
         }
 
         function updateTitle(divelement,farmName) {
+            if (divelement.farm_token == farmToken){
+                //console.log("test")
+                return;
+            }
             const title = document.querySelector('.navbar .title');
             title.textContent = farmName;
             document.querySelector("h1").innerText = divelement.farm_name;
@@ -386,6 +390,7 @@ if  (!isset($_SESSION['user_id'])){
             farmToken = divelement.farm_token;
             fetchData(farmToken);
             fetchImage(farmToken);
+            //console.log("tester123")
         }
 
         async function deleteFarm(button, farmName) {
@@ -457,19 +462,20 @@ if  (!isset($_SESSION['user_id'])){
                 if (!response.ok) {
                     throw new Error('Failed to fetch farm data');
                 }
-
+                const img_url =json_response.image_path
                 const json_response = await response.json();
                 console.log(json_response)
                 if (json_response.status == "error"){
                     console.log("No image found");
+                    document.getElementById("last-image").src= "default.png";
                     return;
                 }
-                const img_url =json_response.image_path
-                document.getElementById("last-image").src= img_url
+                
+                document.getElementById("last-image").src= img_url;
 
             } catch (error) {
                 console.error('Error fetching farm data:', error);
-                document.getElementById("status-bar").innerText = "Error fetching farm data";
+                //document.getElementById("status-bar").innerText = "Error fetching farm data";
             }
         }
 
