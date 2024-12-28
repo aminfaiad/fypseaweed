@@ -23,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($user && $passwordInput== $user['password']) {
             // Login successful, redirect to dashboard
             $_SESSION['user_id'] = $user['user_id']; // Store user ID in session
+            $_SESSION['name '] = $user['name ']; //Store username
             header("Location: dashboard.php");
             exit;
         } else {

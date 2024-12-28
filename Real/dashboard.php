@@ -120,7 +120,8 @@ if  (!isset($_SESSION['user_id'])){
         /* Content Area */
         .content {
             flex: 1;
-            background-color: var(--bg-color);
+            /* background-color: var(--bg-color); */
+            background: radial-gradient(circle, #e1fff1, #66d3c0);
         }
         :root {
             --bg-color: #e1fff1;
@@ -176,7 +177,8 @@ if  (!isset($_SESSION['user_id'])){
             padding: 20px;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
-            min-width: 30%
+            min-width: 30%;
+            margin-left: 10px;
         }
 
         .section-title {
@@ -234,6 +236,7 @@ if  (!isset($_SESSION['user_id'])){
             box-shadow: var(--shadow);
             min-width: 30%;
             max-width: 100%;
+            margin-right: 10px;
         }
 
         #image-container img {
