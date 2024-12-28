@@ -1,6 +1,6 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+//ini_set('display_errors', 1);
+//error_reporting(E_ALL);
 require 'database.php';
 require_once 'email_function_send_reset_link.php';
 
@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute([$email, $token, $expiry]);
 
         // Send the reset link via email using the predefined function
-        $resetLink = "https://smartseaweed.site/Real/forgot_pass/reset_password.php?token=" . $token;
+        $resetLink = "https://smartseaweed.site/Real/reset_password.php?token=" . $token;
         if (sendPasswordResetEmail($email, $resetLink)) {
             $message = "Password reset link has been sent to your email.";
         } else {
