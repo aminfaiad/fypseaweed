@@ -56,7 +56,7 @@ function sendPasswordResetEmail($email, $passwordResetLink) {
 }
 
 
-sendPasswordResetEmail("amin.fauad@student.aiu.edu.my", "https://www.smartseaweed.com/")
+//sendPasswordResetEmail("amin.fauad@student.aiu.edu.my", "https://www.smartseaweed.com/")
 ?>
 
 
