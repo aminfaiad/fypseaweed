@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute([$email, $token, $expiry]);
 
         // Send the reset link via email using the predefined function
-        $resetLink = "https://smartseaweed.com/Real/forgot_pass/reset_password.php?token=" . $token;
+        $resetLink = "https://smartseaweed.site/Real/forgot_pass/reset_password.php?token=" . $token;
         if (sendPasswordResetEmail($email, $resetLink)) {
             $message = "Password reset link has been sent to your email.";
         } else {
