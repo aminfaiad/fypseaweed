@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 break;
             case 'year':
                 $query = "SELECT 
-                    DATE_FORMAT(`time`, '%Y-%m-1 00:00:00') AS time_label,
+                    DATE_FORMAT(`time`, '%Y-%m-01 00:00:00') AS time_label,
                     AVG(ph_value) AS avg_ph, MIN(ph_value) AS min_ph, MAX(ph_value) AS max_ph,
                     AVG(temperature) AS avg_temp, MIN(temperature) AS min_temp, MAX(temperature) AS max_temp,
                     AVG(salinity) AS avg_salinity, MIN(salinity) AS min_salinity, MAX(salinity) AS max_salinity,
