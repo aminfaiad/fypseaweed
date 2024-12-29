@@ -11,7 +11,7 @@ import sys
 
 orig_stdout = sys.stdout
 f = open('out.txt', 'w')
-sys.stdout = f
+
 
 
 
@@ -19,6 +19,7 @@ fromtime = -31536000
 
 
 def createsql():
+    sys.stdout = f
     global fromtime
     orig_stdout = sys.stdout
     f = open('out.txt', 'w')
@@ -42,11 +43,11 @@ def createsql():
 
 #def simulator(url = "https://smartseaweed.site/Real/api.php"):
 def simulator(url = "http://localhost/Real/api.php"):
-    dadata= data={"farm_token" : "73f660a6ef68e8f405b8a6f3cf26413e" , "ph_value" : random.randint(0,7) , "temperature" : random.randint(28,32)  , "salinity" : random.randint(20,35) , "light_intensity" : random.randint(29,50)}
+    dadata= data={"farm_token" : "0784ada79c7d715686eb72d52d14261d" , "ph_value" : random.randint(0,7) , "temperature" : random.randint(28,32)  , "salinity" : random.randint(20,35) , "light_intensity" : random.randint(29,50)}
     r = requests.post(url,data=dadata)
     print("Sending:" , dadata)
     print(r.text)
 
-#while True:
-#    time.sleep(5)
-#    simulator()
+while True:
+   time.sleep(5)
+   simulator()

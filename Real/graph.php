@@ -1,6 +1,6 @@
 <?php
-$_POST['farm_token'] = "testtoken";
-$_POST['farm_range'] = "month";
+$_POST['farm_token'] = "0784ada79c7d715686eb72d52d14261d";
+$_POST['farm_range'] = "day";
 if (!isset($_POST['farm_token']) || !isset($_POST['farm_range'])) {
     // Error response
     echo json_encode([
@@ -114,6 +114,7 @@ $farmRange = $_POST['farm_range'];
                             borderColor: 'rgba(75, 192, 192, 1)',
                             fill: false,
                             tension: 0.4,
+                            //showLine: false
                         },
                         {
                             label: 'Average Temperature',
@@ -147,7 +148,7 @@ $farmRange = $_POST['farm_range'];
                         x: {
                             title: {
                                 display: true,
-                                text: 'Date',
+                                text: 'Time',
                             },
                         },
                         y: {
@@ -155,6 +156,8 @@ $farmRange = $_POST['farm_range'];
                                 display: true,
                                 text: 'Temperature (°C)',
                             },
+                            min: 0, // Set the minimum Y-axis value
+                            max: 40, // Set the maximum Y-axis value
                         },
                     },
                 },

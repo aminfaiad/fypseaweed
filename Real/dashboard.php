@@ -39,11 +39,15 @@ if  (!isset($_SESSION['user_id'])){
             background-color: #333;
             color: white;
             padding: 0 20px;
+            padding-left: 0px;
+            height: 5vh;
         }
 
         .navbar .title {
             font-size: 18px;
             font-weight: bold;
+            flex: 1;
+            margin-left: 1%;
         }
 
         .navbar a {
@@ -237,6 +241,7 @@ if  (!isset($_SESSION['user_id'])){
             min-width: 30%;
             max-width: 100%;
             margin-right: 10px;
+            overflow: auto;
         }
 
         #image-container img {
@@ -247,16 +252,76 @@ if  (!isset($_SESSION['user_id'])){
             box-shadow: var(--shadow);
         }
 
+
+        /* ADDITION */
+        .sidebar {
+            width: 200px;
+            background-color: #f4f4f4;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: width ease 0.3s, padding ease 0.3s;
+        }
+
+        .sidebar.hidden {
+            width: 0px;
+            background-color: #f4f4f4;
+            padding: 0px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: width ease 0.3s, padding ease 0.3s;
+        }
+
+        .drawer {
+        width: 50px;
+        height: 100%;
+        background-color: #000; 
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+    .drawer:hover {
+        transform: scale(1.0);
+        background-color: #333;
+    }
+
         @media (max-width: 768px) {
             .data-item {
                 flex: 1 1 100%;
             }
+            
+
+        .content {
+            flex: 1;
+            /* background-color: var(--bg-color); */
+            background: radial-gradient(circle, #e1fff1, #66d3c0);
+            width: 100%;
         }
+
+        #image-container img {
+            width: 100%;
+            max-height: 80vh;
+            height: auto;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        #image-container .section-title {
+            position: absolute;
+        }
+        }
+        
     </style>
 </head>
 <body>
     <!-- Top Navigation Bar -->
     <div class="navbar">
+        <div class="drawer" onclick="hidesidebar()">☰</div>
         <div class="title">Select a Farm</div>
         <div>
             <a href="settings.php">Settings</a>
@@ -335,6 +400,16 @@ if  (!isset($_SESSION['user_id'])){
 
     <!-- Script -->
     <script>
+        function hidesidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+        sidebar.classList.toggle('hidden');
+    } else {
+        console.error('Element with class .sidebar not found!');
+    }
+}
+
+
         let firstFarm;
         let farmName;
         let farmToken;

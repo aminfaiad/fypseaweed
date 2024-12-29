@@ -26,20 +26,26 @@ CREATE TABLE farms (
     farm_token VARCHAR(255) NOT NULL UNIQUE,
     name VARCHAR(255) NOT NULL,
     plant_type VARCHAR(255) NOT NULL, -- Added plant_type column
+    initial_water_level DECIMAL(6, 2) NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
+
 
 -- Create farm_data table
 CREATE TABLE farm_data (
     data_id INT AUTO_INCREMENT PRIMARY KEY,
     farm_token VARCHAR(255),
-    ph_value DECIMAL(5, 2),
-    temperature DECIMAL(5, 2),
-    salinity DECIMAL(8, 2),
-    light_intensity DECIMAL(8, 2),
+    ph_value DECIMAL(5, 2) NULL,
+    temperature DECIMAL(5, 2) NULL,
+    salinity DECIMAL(8, 2) NULL,
+    light_intensity DECIMAL(8, 2) NULL,
+    water_level DECIMAL(6, 2) NULL,
+    humidity DECIMAL(5, 2) NULL,
     time DATETIME,
     FOREIGN KEY (farm_token) REFERENCES farms(farm_token) ON DELETE CASCADE
 );
+
+
 
 -- Create farm_images table
 CREATE TABLE farm_images (
@@ -47,8 +53,10 @@ CREATE TABLE farm_images (
     farm_token VARCHAR(255),
     time DATETIME,
     image_path VARCHAR(255) NOT NULL,
+    image_comment TEXT NULL,
     FOREIGN KEY (farm_token) REFERENCES farms(farm_token) ON DELETE CASCADE
 );
+
 
 CREATE TABLE password_resets (
     id INT AUTO_INCREMENT PRIMARY KEY,

@@ -26,7 +26,7 @@ body {
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 100%;
+    width: 90%; /* Adjusted for mobile screens */
     max-width: 400px;
     margin: auto;
 }
@@ -49,7 +49,7 @@ label {
 
 input[type="email"],
 input[type="password"] {
-    width: 90%;
+    width: 100%; /* Adjusted for consistency */
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -92,4 +92,39 @@ input[type="password"] {
     padding: 10px 0;
     font-size: 14px;
     color: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .navbar {
+        font-size: 18px; /* Reduce font size for smaller screens */
+        padding: 10px 15px;
+    }
+
+    .login-container {
+        padding: 15px; /* Adjust padding for smaller devices */
+    }
+
+    input[type="email"],
+    input[type="password"] {
+        font-size: 14px; /* Adjust input font size for better readability */
+        max-width: 95%;
+    }
+
+    .btn {
+        font-size: 14px; /* Adjust button font size */
+    }
+
+    .footer {
+        font-size: 12px; /* Smaller font size for footer */
+        position: sticky;
+    }
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%; /* Ensure the body fills the viewport height */
+        display: flex;
+        flex-direction: column; /* Stack content vertically */
+    }
 }
