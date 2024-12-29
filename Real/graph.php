@@ -1,6 +1,6 @@
 <?php
 $_POST['farm_token'] = "testtoken";
-$_POST['farm_range'] = "day";
+$_POST['farm_range'] = "week";
 if (!isset($_POST['farm_token']) || !isset($_POST['farm_range'])) {
     // Error response
     echo json_encode([
