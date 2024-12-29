@@ -209,6 +209,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                             case "year":
                                 $lastTime->modify('-11 months');
+                                $lastTime->setDate($lastTime->format('Y'), $lastTime->format('m'), 1); // Set to the first day of the month
+                                $lastTime->setTime(0, 0, 0); // Set time to midnight (00:00:00)
                                 // Loop through 23 hours and add missing times
                                 for ($i = 0; $i < 11; $i++) {
                                     // Check if the current time exists in the array
@@ -223,6 +225,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     }
                                     // Increment time by 1 hour
                                     $lastTime->modify('+1 months');
+                                    $lastTime->setDate($lastTime->format('Y'), $lastTime->format('m'), 1); // Set to the first day of the month
+                                    $lastTime->setTime(0, 0, 0); // Set time to midnight (00:00:00)
                                 }
                                 break;
 
