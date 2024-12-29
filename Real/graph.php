@@ -1,6 +1,6 @@
 <?php
-//$_POST['farm_token'] = "0784ada79c7d715686eb72d52d14261d";
-//$_POST['farm_range'] = "year";
+$_POST['farm_token'] = "testtoken";
+$_POST['farm_range'] = "year";
 if (!isset($_POST['farm_token']) || !isset($_POST['farm_range'])) {
     // Error response
     echo json_encode([
