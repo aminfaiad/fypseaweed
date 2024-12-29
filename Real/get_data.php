@@ -1,7 +1,10 @@
 <?php
 require 'database.php'; // Include database connection
 
+//$_POST['farm_token'] = "0784ada79c7d715686eb72d52d14261d";
+//$_POST['farm_range'] = "year";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
     $farmToken = trim($_POST['farm_token']);
     $farmRange = trim($_POST['farm_range']);
     
@@ -46,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             exit;
         }
+        
 
         // Define range intervals
         $intervals = [
@@ -70,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         switch($farmRange){
             case 'day':
                 $query = "SELECT 
-                    DATE_FORMAT(`time`, '%Y-%m-%d %H:0:0') AS time_label,
+                    DATE_FORMAT(`time`, '%Y-%m-%d %H:00:00') AS time_label,
                     AVG(ph_value) AS avg_ph, MIN(ph_value) AS min_ph, MAX(ph_value) AS max_ph,
                     AVG(temperature) AS avg_temp, MIN(temperature) AS min_temp, MAX(temperature) AS max_temp,
                     AVG(salinity) AS avg_salinity, MIN(salinity) AS min_salinity, MAX(salinity) AS max_salinity,
@@ -80,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   break;
             case 'week':
                 $query = "SELECT 
-                    DATE_FORMAT(`time`, '%Y-%m-%d 0:0:0') AS time_label,
+                    DATE_FORMAT(`time`, '%Y-%m-%d 00:00:00') AS time_label,
                     AVG(ph_value) AS avg_ph, MIN(ph_value) AS min_ph, MAX(ph_value) AS max_ph,
                     AVG(temperature) AS avg_temp, MIN(temperature) AS min_temp, MAX(temperature) AS max_temp,
                     AVG(salinity) AS avg_salinity, MIN(salinity) AS min_salinity, MAX(salinity) AS max_salinity,
@@ -90,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   break;
             case 'month':
                 $query = "SELECT 
-                    DATE_FORMAT(FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(`time`)) - UNIX_TIMESTAMP(`time`) % 604800), '%Y-%m-%d 0:0:0') AS time_label,
+                    DATE_FORMAT(FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(`time`)) - UNIX_TIMESTAMP(`time`) % 604800), '%Y-%m-%d 00:00:00') AS time_label,
                     AVG(ph_value) AS avg_ph, MIN(ph_value) AS min_ph, MAX(ph_value) AS max_ph,
                     AVG(temperature) AS avg_temp, MIN(temperature) AS min_temp, MAX(temperature) AS max_temp,
                     AVG(salinity) AS avg_salinity, MIN(salinity) AS min_salinity, MAX(salinity) AS max_salinity,
@@ -100,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 break;
             case 'year':
                 $query = "SELECT 
-                    DATE_FORMAT(`time`, '%Y-%m-1 0:0:0') AS time_label,
+                    DATE_FORMAT(`time`, '%Y-%m-1 00:00:00') AS time_label,
                     AVG(ph_value) AS avg_ph, MIN(ph_value) AS min_ph, MAX(ph_value) AS max_ph,
                     AVG(temperature) AS avg_temp, MIN(temperature) AS min_temp, MAX(temperature) AS max_temp,
                     AVG(salinity) AS avg_salinity, MIN(salinity) AS min_salinity, MAX(salinity) AS max_salinity,
@@ -136,30 +140,96 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Process data
         if ($data) {
-            foreach ($data as &$row) {
-                $time = new DateTime($row['time_label']);
-                switch ($farmRange) {
-                    case 'day':
-                        //$time->setTime($time->format('H'), 0, 0);
+            $timeLabels = array_column($data, 'time_label');
+            // Convert time labels to DateTime objects
+            $timeObjects = array_map(function ($time) {
+                return new DateTime($time);
+            }, $timeLabels);
+            // Get the last time
+            $lastTime = end($timeObjects);
+
+
+            switch($farmRange){
+                case "day":
+                    $lastTime->modify('-23 hours');
+                    // Loop through 23 hours and add missing times
+                    for ($i = 0; $i < 23; $i++) {
+                        // Check if the current time exists in the array
+                        if (!in_array($lastTime->format('Y-m-d H:i:s'), $timeLabels)) {
+                            array_splice(
+                                $data, 
+                                $i, 
+                                0, 
+                                [['time_label' => $lastTime->format('Y-m-d H:i:s')] + array_fill_keys(['avg_ph', 'min_ph', 'max_ph', 'avg_temp', 'min_temp', 'max_temp', 'avg_salinity', 'min_salinity', 'max_salinity', 'avg_light', 'min_light', 'max_light'], null)]
+
+                            );
+                        }
+                        // Increment time by 1 hour
+                        $lastTime->modify('+1 hour');
+                    }
+                    break;
+
+                    case "week":
+                        $lastTime->modify('-6 days');
+                        // Loop through 23 hours and add missing times
+                        for ($i = 0; $i < 6; $i++) {
+                            // Check if the current time exists in the array
+                            if (!in_array($lastTime->format('Y-m-d H:i:s'), $timeLabels)) {
+                                array_splice(
+                                    $data, 
+                                    $i, 
+                                    0, 
+                                    [['time_label' => $lastTime->format('Y-m-d H:i:s')] + array_fill_keys(['avg_ph', 'min_ph', 'max_ph', 'avg_temp', 'min_temp', 'max_temp', 'avg_salinity', 'min_salinity', 'max_salinity', 'avg_light', 'min_light', 'max_light'], null)]
+    
+                                );
+                            }
+                            // Increment time by 1 hour
+                            $lastTime->modify('+1 days');
+                        }
                         break;
-                    case 'week':
-                        //$time->setTime(0, 0, 0);
-                        break;
-                    case 'month':
-                        // Align to the start of the 7-day interval
-                        //$startOfInterval = clone $time;
-                        //$daysSinceIntervalStart = ($time->format('d') - 1) % 7;
-                        //$startOfInterval->modify("-{$daysSinceIntervalStart} days");
-                        //$startOfInterval->setTime(0, 0, 0);
-                        //$time = $startOfInterval;
-                        break;
-                    case 'year':
-                        //$time->modify('first day of this month');
-                        //$time->setTime(0, 0, 0);
-                        break;
-                }
-                $row['time_label'] = $time->format('Y-m-d H:i:s');
+
+                        case "month":
+                            $lastTime->modify('-3 weeks');
+                            // Loop through 23 hours and add missing times
+                            for ($i = 0; $i < 3; $i++) {
+                                // Check if the current time exists in the array
+                                if (!in_array($lastTime->format('Y-m-d H:i:s'), $timeLabels)) {
+                                    array_splice(
+                                        $data, 
+                                        $i, 
+                                        0, 
+                                        [['time_label' => $lastTime->format('Y-m-d H:i:s')] + array_fill_keys(['avg_ph', 'min_ph', 'max_ph', 'avg_temp', 'min_temp', 'max_temp', 'avg_salinity', 'min_salinity', 'max_salinity', 'avg_light', 'min_light', 'max_light'], null)]
+        
+                                    );
+                                }
+                                // Increment time by 1 hour
+                                $lastTime->modify('+1 weeks');
+                            }
+                            break;
+
+                            case "year":
+                                $lastTime->modify('-11 months');
+                                // Loop through 23 hours and add missing times
+                                for ($i = 0; $i < 11; $i++) {
+                                    // Check if the current time exists in the array
+                                    if (!in_array($lastTime->format('Y-m-d H:i:s'), $timeLabels)) {
+                                        array_splice(
+                                            $data, 
+                                            $i, 
+                                            0, 
+                                            [['time_label' => $lastTime->format('Y-m-d H:i:s')] + array_fill_keys(['avg_ph', 'min_ph', 'max_ph', 'avg_temp', 'min_temp', 'max_temp', 'avg_salinity', 'min_salinity', 'max_salinity', 'avg_light', 'min_light', 'max_light'], null)]
+            
+                                        );
+                                    }
+                                    // Increment time by 1 hour
+                                    $lastTime->modify('+1 months');
+                                }
+                                break;
+
+
             }
+            
+            //print_r($data[1]);
 
             // Build result
             $result = [
