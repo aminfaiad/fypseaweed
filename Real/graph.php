@@ -1,5 +1,5 @@
 <?php
-$_POST['farm_token'] = "testtoken";
+$_POST['farm_token'] = "7f53fc39e3f325a2537d79945c45d1e1";
 $_POST['farm_range'] = "year";
 if (!isset($_POST['farm_token']) || !isset($_POST['farm_range'])) {
     // Error response
@@ -22,11 +22,32 @@ $farmRange = $_POST['farm_range'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Dynamic Chart Example</title>
+    <style>
+        body{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;   
+            align-items: center;
+        
+        }
+        #time-options{
+           
+        }
+
+    </style>
 </head>
 <body>
     <canvas id="myChart" width="400" height="200"></canvas>
-
+    <div id="time-options">
+        <select id="time-select">
+        <option value="hour" selected>Hour</option>
+        <option value="day">Day</option>
+        <option value="month">Month</option>
+        <option value="year">Year</option>
+        </select>
+    </div>
     <script>
+        //let farm_data.tokenss.
         async function fetchData() {
             try {
                 const response = await fetch('get_data.php', {
