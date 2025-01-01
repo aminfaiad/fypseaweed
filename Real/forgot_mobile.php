@@ -5,7 +5,7 @@ error_reporting(E_ALL);
 
 session_start();
 require 'database.php'; // Include database connection
-
+require_once 'email_function_send_reset_link.php';
 header('Content-Type: application/json'); // Set the response header to JSON
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
