@@ -52,11 +52,67 @@ def send_fcm_notification(fcm_token, title, body):
         print(f"Error sending message: {e}")
 # Create a cursor object
 cursor = connection.cursor(prepared=True)  # Enable prepared statements
-select_query = "SELECT * FROM users;"
+#select_query = "SELECT * FROM users;"
 #cursor.execute(select_query, ("value1",))
 cursor.execute(select_query)
 # Fetch and display results
 result = cursor.fetchall()
 
 
-send_fcm_notification("cdtIXfCoR22e2DZsCJaof2:APA91bGeozHFJb7CLV9gdlxMOPW1DTWZqE8jf7bjivAnyxN8G-IZ8DJV4onAqZjcxB4CHUbx1W7Zmug46pD_3wcdVUqn5sIzUFmZX4mWgMWn5jKawGuJSA0","test","test")
+queryselectall = """WITH RecentEntries AS (
+    SELECT 
+        fd.*
+    FROM 
+        farm_data fd
+    WHERE 
+        fd.time >= NOW() + INTERVAL 7 HOUR + INTERVAL 55 MINUTE
+),
+RankedEntries AS (
+    SELECT 
+        re.*,
+        ROW_NUMBER() OVER (PARTITION BY re.farm_token ORDER BY re.time DESC) AS row_num
+    FROM 
+        RecentEntries re
+),
+LatestEntries AS (
+    SELECT 
+        re.data_id, 
+        re.farm_token, 
+        re.ph_value, 
+        re.temperature, 
+        re.salinity, 
+        re.light_intensity, 
+        re.time,
+        f.user_id
+    FROM 
+        RankedEntries re
+    JOIN 
+        farms f
+    ON 
+        re.farm_token = f.farm_token
+    WHERE 
+        re.row_num = 1
+)
+SELECT 
+    le.data_id, 
+    le.farm_token, 
+    le.ph_value, 
+    le.temperature, 
+    le.salinity, 
+    le.light_intensity, 
+    le.time,
+    le.user_id,
+    uft.fcm_token,
+    uft.device_type
+FROM 
+    LatestEntries le
+LEFT JOIN 
+    user_fcm_tokens uft
+ON 
+    le.user_id = uft.user_id;"""
+
+
+cursor.execute(queryselectall)
+# Fetch and display results
+result = cursor.fetchall()
+print(result)
