@@ -21,10 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Login successful
     
             // Generate a secure random token
-            $token = bin2hex(random_bytes(16)); // 32-character random token
+            $mobile_token = bin2hex(random_bytes(16)); // 32-character random token
     
             // Insert the token into the mobile_token table
-            $stmt = $pdo->prepare("INSERT INTO mobile_token (user_id, token) VALUES (:user_id, :token)");
+            $stmt = $pdo->prepare("INSERT INTO mobile_login_token (user_id, mobile_token) VALUES (:user_id, :mobile_token)");
             $stmt->bindParam(':user_id', $user['user_id']);
             $stmt->bindParam(':token', $token);
             $stmt->execute();
