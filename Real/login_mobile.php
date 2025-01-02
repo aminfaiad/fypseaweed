@@ -33,9 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode([
                 'status' => 'success',
                 'message' => 'Login successful',
-                'user_id' => $user['user_id'],
                 'name' => $user['name'],
-                'token' => $token
+                'mobile_token' => $mobile_token
             ]);
         } else {
             // Login failed, return error response
