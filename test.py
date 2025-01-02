@@ -54,9 +54,9 @@ def send_fcm_notification(fcm_token, title, body):
 cursor = connection.cursor(prepared=True)  # Enable prepared statements
 #select_query = "SELECT * FROM users;"
 #cursor.execute(select_query, ("value1",))
-cursor.execute(select_query)
+#cursor.execute(select_query)
 # Fetch and display results
-result = cursor.fetchall()
+#result = cursor.fetchall()
 
 
 queryselectall = """WITH RecentEntries AS (
