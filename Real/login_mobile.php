@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Insert the token into the mobile_token table
             $stmt = $pdo->prepare("INSERT INTO mobile_login_token (user_id, mobile_token) VALUES (:user_id, :mobile_token)");
             $stmt->bindParam(':user_id', $user['user_id']);
-            $stmt->bindParam(':token', $token);
+            $stmt->bindParam(':token', $mobile_token);
             $stmt->execute();
     
             // Return success response with token and user details
