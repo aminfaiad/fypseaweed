@@ -47,7 +47,8 @@ $farmRange = $_POST['farm_range'];
         </select>
     </div>
     <script>
-        //let farm_data.tokenss.
+        let farm_data = {};
+
         async function fetchData() {
             try {
                 const response = await fetch('get_data.php', {
@@ -62,6 +63,7 @@ $farmRange = $_POST['farm_range'];
                 });
 
                 const data = await response.json();
+                
 
                 if (data.status === 'success') {
                     return data;

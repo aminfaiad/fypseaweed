@@ -64,3 +64,20 @@ CREATE TABLE password_resets (
     token VARCHAR(255) NOT NULL,
     expires_at DATETIME NOT NULL
 );
+
+CREATE TABLE user_fcm_tokens (
+    id INT AUTO_INCREMENT PRIMARY KEY, -- Unique identifier for each token
+    user_id INT , -- Foreign key to associate with users table
+    fcm_token VARCHAR(255) NOT NULL UNIQUE, -- FCM token for push notifications
+    device_type VARCHAR(50), -- Device type (optional, e.g., Android, iOS)
+    created_at DATETIME , -- Timestamp of token creation
+    last_notification_sent DATETIME, -- Tracks the last notification sent
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE -- Ensures user deletion removes associated tokens
+);
+
+CREATE TABLE mobile_login_token (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    mobile_token VARCHAR(255) NOT NULL UNIQUE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
