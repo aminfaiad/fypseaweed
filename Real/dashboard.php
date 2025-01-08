@@ -624,8 +624,8 @@ if  (!isset($_SESSION['user_id'])){
 
 
         document.addEventListener("DOMContentLoaded", fetchFarmData);
-        setInterval(function() {fetchData(farmToken); },5000);
-        setInterval(function() {fetchImage(farmToken); },5000);
+        setInterval(function() {fetchData(farmToken); },1000);
+        setInterval(function() {fetchImage(farmToken); },1000);
     </script>
 </body>
 </html>
