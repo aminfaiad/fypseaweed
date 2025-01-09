@@ -1,70 +1,3 @@
-<?php
-//$_POST['farm_token'] = "7f53fc39e3f325a2537d79945c45d1e1"; //local
-//$_POST['type'] = "temperature";    //salinity/light_intensity/ph_value/temperature
-
-if (!isset($_POST['farm_token']) ) {
-    // Error response
-    echo json_encode([
-        'status' => 'error',
-        'message' => 'All fields required'
-    ]);
-    exit; // Stop further script execution
-}
-
-// Proceed with your logic when the fields are set
-$farmToken = $_POST['farm_token'];
-$farmRange = "day";
-
-$farmType = $_POST['type'];
-
-$label = '';
-$units = '';
-$minvalue = 0;
-$maxvalue = 0;
-
-switch ($farmType){
-    case "temperature":
-        $label = "Environment Temperature";
-        $units = "(°C)";
-        $minvalue = 0;
-        $maxvalue = 40;
-        break;
-    case "salinity":
-        $label = "Salinity";
-        $units = "(ppt)";
-        $minvalue = 0;
-        $maxvalue = 45;
-        break;
-    case "light_intensity":
-        $label = "Light Intensity";
-        $units = "(lux)";
-        $minvalue = 0;
-        $maxvalue = 10000;
-        break;
-    case "ph_value":
-        $label = "Water pH Level";
-        $units = "";
-        $minvalue = 0;
-        $maxvalue = 14;
-        break;
-    case "water_level":
-        $label = "Water Level";
-        $units = "(cm)";
-        $minvalue = 0;
-        $maxvalue = 100;
-        break;
-
-    default:
-        echo json_encode([
-            'status' => 'error',
-            'message' => 'Invalid sensor type'
-        ]);
-
-}
-
-
-
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,18 +13,21 @@ switch ($farmType){
             align-items: center;
             height: 100vh;
             background-color: beige;
+            margin: 0;
         }
-        #myChart {
+        .chart-container {
             width: 90vw;
-            height: 80vh;
+            height: 80vh; /* Ensure the container height is 80% of the viewport */
         }
         canvas {
-            font-size: 2vw !important; /* Set minimum font size for Chart.js elements */
+            display: block;
         }
     </style>
 </head>
 <body>
-    <canvas id="myChart"></canvas>
+    <div class="chart-container">
+        <canvas id="myChart"></canvas>
+    </div>
 
     <script>
         let farm_data = {};
@@ -128,9 +64,6 @@ switch ($farmType){
             if (!data) return;
 
             let labels = data.labels;
-
-            const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-            const monthsOfYear = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
             if ('<?php echo $farmRange ?>' === 'day') {
                 labels = labels.map(dateString => {
@@ -175,6 +108,7 @@ switch ($farmType){
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false, // Ensure the chart stretches to fit the container
                     plugins: {
                         title: {
                             display: true,
@@ -202,7 +136,7 @@ switch ($farmType){
                             },
                         },
                         y: {
-                            <?php if($farmType == "light_intensity") echo "type : 'logarithmic',"; ?>
+                            <?php if ($farmType == "light_intensity") echo "type : 'logarithmic',"; ?>
                             title: {
                                 display: true,
                                 text: '<?php echo $label ?> <?php echo $units ?>',
