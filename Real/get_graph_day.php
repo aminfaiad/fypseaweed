@@ -82,9 +82,11 @@ switch ($farmType){
             height: 100vh;
         
         }
-        #time-options{
-           
+        #myChart{
+           height: 100vh;
         }
+
+        
 
     </style>
 </head>
