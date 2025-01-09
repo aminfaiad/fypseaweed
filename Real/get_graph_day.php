@@ -182,14 +182,14 @@ switch ($farmType){
                             display: true,
                             text: '<?php echo $label ?> Over Time <?php echo $units ?>',
                             font: {
-                                size: 2 * window.innerWidth / 100, // Adjust font size based on viewport
+                                size: 8 * window.innerWidth / 100, // Adjust font size based on viewport
                             },
                         },
                         tooltip: {
                             mode: 'index',
                             intersect: false,
                             bodyFont: {
-                                size: 2 * window.innerWidth / 100, // Adjust tooltip font size
+                                size: 6 * window.innerWidth / 100, // Adjust tooltip font size
                             },
                         },
                     },
