@@ -45,11 +45,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $insertStmt->bindParam(':fcm_token', $fcmToken, $fcmToken ? PDO::PARAM_STR : PDO::PARAM_NULL);
             $insertStmt->execute();
     
-            // Return success response with token and user details
+            // Return success response with token, user details, and email
             echo json_encode([
                 'status' => 'success',
                 'message' => 'Login successful',
                 'name' => $user['name'],
+                'email' => $user['email'], // Include email in the response
                 'mobile_token' => $mobile_token
             ]);
         } else {
