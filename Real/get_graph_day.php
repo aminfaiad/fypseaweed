@@ -88,7 +88,7 @@ switch ($farmType){
     </style>
 </head>
 <body>
-    <canvas id="myChart" width="400" height="200"></canvas>
+    <canvas id="myChart" width="100vw" height="100vh"></canvas>
 
     <script>
         let farm_data = {};
