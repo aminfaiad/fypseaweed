@@ -126,6 +126,7 @@ cursor.close()
 print(result)
 
 def looper():
+    global queryselectall
     cursor = connection.cursor(prepared=True)
     time.sleep(5)
     cursor.execute(queryselectall)

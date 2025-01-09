@@ -43,8 +43,8 @@ def createsql():
 
 def simulator(url = "https://smartseaweed.site/Real/api.php"):
 #def simulator(url = "http://localhost/Real/api.php"):
-    #dadata= data={"farm_token" : "6a208f040cc1e8f29e87ce75263186f4" , "ph_value" : random.randint(8,9) , "temperature" : random.randint(28,32)  , "salinity" : random.randint(32,33) , "light_intensity" : random.randint(29,50)} #SAFE VALUE
-    dadata= data={"farm_token" : "6a208f040cc1e8f29e87ce75263186f4" , "ph_value" : random.randint(1,7) , "temperature" : random.randint(28,32)  , "salinity" : random.randint(32,33) , "light_intensity" : random.randint(29,50)} #UNSAFE VALUE
+    dadata= data={"farm_token" : "6a208f040cc1e8f29e87ce75263186f4" , "ph_value" : random.randint(8,9) , "temperature" : random.randint(28,32)  , "salinity" : random.randint(32,33) , "light_intensity" : random.randint(29,50)} #SAFE VALUE
+    #dadata= data={"farm_token" : "6a208f040cc1e8f29e87ce75263186f4" , "ph_value" : random.randint(1,7) , "temperature" : random.randint(28,32)  , "salinity" : random.randint(32,33) , "light_intensity" : random.randint(29,50)} #UNSAFE VALUE
     r = requests.post(url,data=dadata)
     print("Sending:" , dadata)
     print(r.text)
