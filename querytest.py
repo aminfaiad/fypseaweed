@@ -124,11 +124,3 @@ result = cursor.fetchall()
 
 print(result)
 
-def looper():
-    time.sleep(5)
-    cursor.execute(queryselectall)
-    result = cursor.fetchall()
-    for x in result:
-        if (x[idx_ph]<8) or x[idx_ph]>9  or x[idx_temp] > 34 or x[idx_temp] < 28 or x[idx_salinity] < 28 or x[idx_salinity] > 35:
-            send_fcm_notification(x[idx_fcm],"WARNING", "Your seaweed farm need urgent care")
-
