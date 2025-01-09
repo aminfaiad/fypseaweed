@@ -80,7 +80,7 @@ switch ($farmType){
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: beige;
+            background-color:rgb(180, 180, 180);
             margin: 0;
         }
         .chart-container {
@@ -189,7 +189,7 @@ switch ($farmType){
                             mode: 'index',
                             intersect: false,
                             bodyFont: {
-                                size: 6 * window.innerWidth / 100, // Adjust tooltip font size
+                                size: 4 * window.innerWidth / 100, // Adjust tooltip font size
                             },
                         },
                     },
