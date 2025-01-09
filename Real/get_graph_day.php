@@ -65,7 +65,6 @@ switch ($farmType){
 
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -74,25 +73,25 @@ switch ($farmType){
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Chart</title>
     <style>
-        body{
+        body {
             display: flex;
             flex-direction: column;
-            justify-content: center;   
+            justify-content: center;
             align-items: center;
             height: 100vh;
             background-color: beige;
-        
         }
-        #myChart{
-           height: 100vh;
+        #myChart {
+            width: 90vw;
+            height: 80vh;
         }
-
-        
-
+        canvas {
+            font-size: 2vw !important; /* Set minimum font size for Chart.js elements */
+        }
     </style>
 </head>
 <body>
-    <canvas id="myChart" width="100vw" height="100vh"></canvas>
+    <canvas id="myChart"></canvas>
 
     <script>
         let farm_data = {};
@@ -111,7 +110,6 @@ switch ($farmType){
                 });
 
                 const data = await response.json();
-                
 
                 if (data.status === 'success') {
                     return data;
@@ -125,35 +123,27 @@ switch ($farmType){
         }
 
         async function renderChart() {
-            let farm_token = '<?php echo $farmToken ?>';
-            let farmRange = '<?php echo $farmRange ?>' ; 
             const data = await fetchData();
 
             if (!data) return;
 
             let labels = data.labels;
-            // let test = new Date("2023-12-01 00:00:00");
-            // Array of weekday names
+
             const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-            const monthsOfYear = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug" , "Sep", "Oct", "Nov", "Dec"];
+            const monthsOfYear = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-
-            if (farmRange == 'day'){
+            if ('<?php echo $farmRange ?>' === 'day') {
                 labels = labels.map(dateString => {
-                const date = new Date(dateString); // Convert to Date object
-                return date.getHours() + ":00";  // Map to day name
+                    const date = new Date(dateString);
+                    return date.getHours() + ":00";
                 });
             }
 
-    
-
-            const minData = data.min.map(item => parseFloat(item.<?php echo $_POST['type']?>));
-            const averageData = data.average.map(item => parseFloat(item.<?php echo $_POST['type']?>));
-            const maxData = data.max.map(item => parseFloat(item.<?php echo $_POST['type']?>));
+            const minData = data.min.map(item => parseFloat(item.<?php echo $_POST['type'] ?>));
+            const averageData = data.average.map(item => parseFloat(item.<?php echo $_POST['type'] ?>));
+            const maxData = data.max.map(item => parseFloat(item.<?php echo $_POST['type'] ?>));
 
             const ctx = document.getElementById('myChart').getContext('2d');
-            
-
 
             new Chart(ctx, {
                 type: 'line',
@@ -161,22 +151,21 @@ switch ($farmType){
                     labels: labels,
                     datasets: [
                         {
-                            label: 'Min <?php echo $label?>',
+                            label: 'Min <?php echo $label ?>',
                             data: minData,
                             borderColor: 'rgba(75, 192, 192, 1)',
                             fill: false,
                             tension: 0.4,
-                            //showLine: false
                         },
                         {
-                            label: 'Average <?php echo $label?>',
+                            label: 'Average <?php echo $label ?>',
                             data: averageData,
                             borderColor: 'rgba(54, 162, 235, 1)',
                             fill: false,
                             tension: 0.4,
                         },
                         {
-                            label: 'Max <?php echo $label?>',
+                            label: 'Max <?php echo $label ?>',
                             data: maxData,
                             borderColor: 'rgba(255, 99, 132, 1)',
                             fill: false,
@@ -189,11 +178,17 @@ switch ($farmType){
                     plugins: {
                         title: {
                             display: true,
-                            text: '<?php echo $label?> Over Time <?php echo $units?>',
+                            text: '<?php echo $label ?> Over Time <?php echo $units ?>',
+                            font: {
+                                size: 2 * window.innerWidth / 100, // Adjust font size based on viewport
+                            },
                         },
                         tooltip: {
                             mode: 'index',
                             intersect: false,
+                            bodyFont: {
+                                size: 2 * window.innerWidth / 100, // Adjust tooltip font size
+                            },
                         },
                     },
                     scales: {
@@ -201,23 +196,28 @@ switch ($farmType){
                             title: {
                                 display: true,
                                 text: 'Time',
+                                font: {
+                                    size: 2 * window.innerWidth / 100,
+                                },
                             },
                         },
                         y: {
-                            <?php if($farmType=="light_intensity")echo "type : 'logarithmic',"?>
+                            <?php if($farmType == "light_intensity") echo "type : 'logarithmic',"; ?>
                             title: {
                                 display: true,
-                                text: '<?php echo $label?> <?php echo $units?>',
+                                text: '<?php echo $label ?> <?php echo $units ?>',
+                                font: {
+                                    size: 2 * window.innerWidth / 100,
+                                },
                             },
-                            min: <?php echo $minvalue?>, // Set the minimum Y-axis value
-                            max: <?php echo $maxvalue?>, // Set the maximum Y-axis value
+                            min: <?php echo $minvalue ?>,
+                            max: <?php echo $maxvalue ?>,
                         },
                     },
                 },
             });
         }
 
-        // Call the renderChart function on page load
         renderChart();
     </script>
 </body>
