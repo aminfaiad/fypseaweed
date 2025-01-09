@@ -1,3 +1,71 @@
+<?php
+//$_POST['farm_token'] = "7f53fc39e3f325a2537d79945c45d1e1"; //local
+//$_POST['type'] = "temperature";    //salinity/light_intensity/ph_value/temperature
+
+if (!isset($_POST['farm_token']) ) {
+    // Error response
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'All fields required'
+    ]);
+    exit; // Stop further script execution
+}
+
+// Proceed with your logic when the fields are set
+$farmToken = $_POST['farm_token'];
+$farmRange = "day";
+
+$farmType = $_POST['type'];
+
+$label = '';
+$units = '';
+$minvalue = 0;
+$maxvalue = 0;
+
+switch ($farmType){
+    case "temperature":
+        $label = "Environment Temperature";
+        $units = "(°C)";
+        $minvalue = 0;
+        $maxvalue = 40;
+        break;
+    case "salinity":
+        $label = "Salinity";
+        $units = "(ppt)";
+        $minvalue = 0;
+        $maxvalue = 45;
+        break;
+    case "light_intensity":
+        $label = "Light Intensity";
+        $units = "(lux)";
+        $minvalue = 0;
+        $maxvalue = 10000;
+        break;
+    case "ph_value":
+        $label = "Water pH Level";
+        $units = "";
+        $minvalue = 0;
+        $maxvalue = 14;
+        break;
+    case "water_level":
+        $label = "Water Level";
+        $units = "(cm)";
+        $minvalue = 0;
+        $maxvalue = 100;
+        break;
+
+    default:
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Invalid sensor type'
+        ]);
+
+}
+
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
