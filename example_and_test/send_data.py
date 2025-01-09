@@ -41,9 +41,10 @@ def createsql():
     $lightIntensity = trim($_POST['light_intensity']);
 '''
 
-#def simulator(url = "https://smartseaweed.site/Real/api.php"):
-def simulator(url = "http://localhost/Real/api.php"):
-    dadata= data={"farm_token" : "0784ada79c7d715686eb72d52d14261d" , "ph_value" : random.randint(0,7) , "temperature" : random.randint(28,32)  , "salinity" : random.randint(20,35) , "light_intensity" : random.randint(29,50)}
+def simulator(url = "https://smartseaweed.site/Real/api.php"):
+#def simulator(url = "http://localhost/Real/api.php"):
+    #dadata= data={"farm_token" : "6a208f040cc1e8f29e87ce75263186f4" , "ph_value" : random.randint(8,9) , "temperature" : random.randint(28,32)  , "salinity" : random.randint(32,33) , "light_intensity" : random.randint(29,50)} #SAFE VALUE
+    dadata= data={"farm_token" : "6a208f040cc1e8f29e87ce75263186f4" , "ph_value" : random.randint(1,7) , "temperature" : random.randint(28,32)  , "salinity" : random.randint(32,33) , "light_intensity" : random.randint(29,50)} #UNSAFE VALUE
     r = requests.post(url,data=dadata)
     print("Sending:" , dadata)
     print(r.text)
