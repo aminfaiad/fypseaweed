@@ -80,7 +80,7 @@ switch ($farmType){
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color:rgb(180, 180, 180);
+            background-color:rgb(255, 255, 255);
             margin: 0;
         }
         .chart-container {
