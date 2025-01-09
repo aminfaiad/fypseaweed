@@ -57,6 +57,9 @@ try {
         'created_at' => date('Y-m-d H:i:s')
     ]);
 
+
+    
+
     echo json_encode([
         'status' => 'success',
         'message' => 'FCM token added successfully.'
