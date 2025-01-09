@@ -26,6 +26,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $deleteStmt = $pdo->prepare("DELETE FROM mobile_login_token WHERE fcm_token = :fcm_token");
                 $deleteStmt->bindParam(':fcm_token', $fcmToken);
                 $deleteStmt->execute();
+
+                $deleteStmt = $pdo->prepare("DELETE FROM user_fcm_tokens WHERE fcm_token = :fcm_token");
+                $deleteStmt->bindParam(':fcm_token', $fcmToken);
+                $deleteStmt->execute();
             }
     
             // Generate a secure random token
