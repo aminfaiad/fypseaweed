@@ -2,6 +2,15 @@ import mysql.connector
 import firebase_admin
 from firebase_admin import credentials, messaging
 import time
+import sys
+
+# Open the file in append mode (creates the file if it doesn't exist)
+log_file = open('tokenlog.log', 'a')
+
+# Redirect stdout to the log file
+sys.stdout = log_file
+
+
 
 # Initialize the Firebase Admin SDK
 cred_obj = credentials.Certificate('seaweedfyp-firebase-adminsdk-ky1sy-0eaca81589.json')
@@ -135,4 +144,16 @@ def looper():
     for x in result:
         if (x[idx_ph]<8) or x[idx_ph]>9  or x[idx_temp] > 34 or x[idx_temp] < 28 or x[idx_salinity] < 28 or x[idx_salinity] > 35:
             send_fcm_notification(x[idx_fcm],"WARNING", "Your seaweed farm need urgent care")
+
+
+while True:
+    connection.reconnect()
+    cursor = connection.cursor(prepared=True)
+    cursor.execute(queryselectall)
+    result = cursor.fetchall()
+    cursor.close()
+    for x in result:
+        if (x[idx_ph]<8) or x[idx_ph]>9  or x[idx_temp] > 34 or x[idx_temp] < 28 or x[idx_salinity] < 28 or x[idx_salinity] > 35:
+            send_fcm_notification(x[idx_fcm],"WARNING", "Your seaweed farm need urgent care")
+    time.sleep(60)
 
