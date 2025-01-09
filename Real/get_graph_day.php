@@ -79,6 +79,7 @@ switch ($farmType){
             flex-direction: column;
             justify-content: center;   
             align-items: center;
+            height: 100vh;
         
         }
         #time-options{
