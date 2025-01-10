@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['farm_token'])) {
     try {
         // Prepare the SQL query to fetch the latest image for the given token
         $stmt = $pdo->prepare("
-            SELECT image_path, time 
+            SELECT image_path, time, ai_insight
             FROM farm_images 
             WHERE farm_token = :farm_token 
             ORDER BY time DESC 
@@ -24,11 +24,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['farm_token'])) {
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($result) {
-            // Return the latest image path and time as JSON
+            // Return the latest image path, time, and ai_insight as JSON
             echo json_encode([
                 'status' => 'success',
                 'image_path' => $result['image_path'],
-                'time' => $result['time']
+                'time' => $result['time'],
+                'ai_insight' => $result['ai_insight'] // Include ai_insight in the response
             ]);
         } else {
             // No images found for the token
