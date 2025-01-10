@@ -291,6 +291,100 @@ if  (!isset($_SESSION['user_id'])){
         background-color: #333;
     }
 
+    /* CSS for the button */
+    .button-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .calibrate-button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .calibrate-button:hover {
+      background-color: #45a049;
+    }
+
+    /* CSS for the custom modal dialog */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      width: 300px;
+    }
+
+    .modal-content p {
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+
+    .modal-content input {
+      width: 90%;
+      padding: 8px;
+      margin-bottom: 15px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .modal-button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .confirm {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .confirm:hover {
+      background-color: #45a049;
+    }
+
+    .cancel {
+      background-color: #f44336;
+      color: white;
+    }
+
+    .cancel:hover {
+      background-color: #e53935;
+    }
+
+
+
+
         @media (max-width: 768px) {
             .data-item {
                 flex: 1 1 100%;
@@ -400,6 +494,9 @@ if  (!isset($_SESSION['user_id'])){
                     </div>
                     <span id="water-level-value">-</span>
                 </div>
+                <div class="button-container">
+                    <button class="calibrate-button" onclick="showInputModal()">Calibrate Water Level</button>
+                </div>
             </section>
         </main>
 
@@ -413,6 +510,17 @@ if  (!isset($_SESSION['user_id'])){
         </div>
     </div>
 
+
+    <div id="inputModal" class="modal">
+    <div class="modal-content">
+      <p>Enter the water level (decimal value):</p>
+      <input type="text" id="inputValue" placeholder="e.g., 10.5">
+      <div class="modal-buttons">
+        <button class="modal-button confirm" onclick="handleInputValue()">Confirm</button>
+        <button class="modal-button cancel" onclick="closeModal('inputModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
     <!-- Script -->
     <script>
         function hidesidebar() {
@@ -652,6 +760,37 @@ if  (!isset($_SESSION['user_id'])){
         document.addEventListener("DOMContentLoaded", fetchFarmData);
         setInterval(function() {fetchData(farmToken); },1000);
         setInterval(function() {fetchImage(farmToken); },1000);
+
+
+        // Show the input modal
+    function showInputModal() {
+      document.getElementById("inputModal").style.display = "flex";
+    }
+
+    // Handle the input value and directly execute funcA
+    function handleInputValue() {
+      const inputValue = document.getElementById("inputValue").value.trim();
+      const numericValue = parseFloat(inputValue);
+
+      if (!isNaN(numericValue)) {
+        closeModal("inputModal");
+        funcA(numericValue);
+      } else {
+        alert("Please enter a valid numeric value.");
+      }
+    }
+
+    // Close the modal by its ID
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = "none";
+    }
+
+    // Placeholder for your custom function
+    function funcA(value) {
+      alert(`Calibration successful with value: ${value}`);
+      console.log(`funcA executed with value: ${value}`);
+    }
+
     </script>
 </body>
 </html>
