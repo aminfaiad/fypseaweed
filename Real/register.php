@@ -1,47 +1,48 @@
 <?php
+session_start();
 require 'database.php'; // Include database connection
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get input values from the POST request
-    $name = trim($_POST['name']);
-    $email = trim($_POST['email']);
-    $passwordInput = trim($_POST['password']);
+if (isset($_SESSION['user_id'])) {
+    header("Location: dashboard.php");
+    exit;
+}
 
-    // Validate inputs
-    if (empty($name) || empty($email) || empty($passwordInput)) {
-        echo 'All fields are required.';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = trim($_POST['username']);
+    $email = trim($_POST['email']);
+    $password = trim($_POST['password']);
+    $confirmPassword = trim($_POST['confirm_password']);
+
+    if ($password !== $confirmPassword) {
+        $_SESSION['error'] = 'Passwords do not match';
+        header("Location: register.php");
         exit;
     }
 
     try {
-        // Check if the email is already in use
+        // Check if email already exists
         $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
         $stmt->bindParam(':email', $email);
         $stmt->execute();
+        $existingUser = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($stmt->rowCount() > 0) {
-            echo 'Email is already registered.';
+        if ($existingUser) {
+            $_SESSION['error'] = 'Email is already registered';
+            header("Location: register.php");
             exit;
         }
 
-        // Hash the password securely
-        // $hashedPassword = password_hash($passwordInput, PASSWORD_BCRYPT); Using hashedpassword
-        $hashedPassword = $passwordInput;
-
-        // Insert the new user into the database
-        $stmt = $pdo->prepare("INSERT INTO users (name, email, password) VALUES (:name, :email, :password)");
-        $stmt->bindParam(':name', $name);
+        // Insert the new user into the database (plain text password)
+        $stmt = $pdo->prepare("INSERT INTO users (name, email, password) VALUES (:username, :email, :password)");
+        $stmt->bindParam(':username', $username);
         $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':password', $hashedPassword);
+        $stmt->bindParam(':password', $password);
+        $stmt->execute();
 
-        if ($stmt->execute()) {
-            echo 'Registration successful.';
-            header("Location: login.php");
-        } else {
-            echo 'Registration failed.';
-        }
+        $_SESSION['success'] = 'Registration successful! Please login.';
+        header("Location: login.php");
+        exit;
     } catch (Exception $e) {
-        // Handle any errors during insertion
         die("Error: " . $e->getMessage());
     }
 }
@@ -53,22 +54,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
-    <link rel="stylesheet" href="reg.css">
-    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <!-- Navigation Bar -->
     <div class="navbar">
-        Smart Seaweed - Register
+        Smart Seaweed
     </div>
 
     <!-- Register Form -->
-    <div class="register-container">
+    <div class="login-container">
         <h2>Register</h2>
-        <form action="register.php" method="POST" onsubmit="return validateForm()">
+        <form action="/Real/register.php" method="POST" onsubmit="return validateForm()">
             <div class="form-group">
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" placeholder="Enter your name" required>
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
             </div>
             <div class="form-group">
                 <label for="email">Email:</label>
@@ -79,47 +79,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="password" id="password" name="password" placeholder="Enter your password" required>
             </div>
             <div class="form-group">
-                <label for="gender">Gender:</label>
-                <select id="gender" name="gender" required>
-                    <option value="">Select your gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                </select>
-            </div>
-            <div class="form-group">
-            <input id="countrycode" type="hidden" name="ccode" value="MY" />
-            <div class="select-box">
-        <div class="selected-option">
-            <div>
-                <span class="iconify" data-icon="flag:my-4x3"></span>
-                <strong>+60</strong>
-            </div>
-            <input type="tel" name="tel" placeholder="Phone Number">
-        </div>
-        <div class="options">
-            <input type="text" class="search-box" placeholder="Search Country Name">
-            <ol>
-
-            </ol>
-        </div>
-    </div>
-            </div>
-            <div class="form-group">
-                <label for="country">Country:</label>
-                <input type="text" id="country" name="country" placeholder="Enter your country" required>
-            </div>
-            <div class="form-group">
-                <label for="state">State:</label>
-                <input type="text" id="state" name="state" placeholder="Enter your state" required>
-            </div>
-            <div class="form-group">
-                <label for="city">City:</label>
-                <input type="text" id="city" name="city" placeholder="Enter your city" required>
+                <label for="confirm_password">Confirm Password:</label>
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required>
             </div>
             <button type="submit" class="btn">Register</button>
         </form>
         <div class="links">
-            <p>Already have an account? <a href="login.php">Login here</a></p>
+            <p><a href="login.php">Already have an account? Login here</a></p>
         </div>
     </div>
 
@@ -130,22 +96,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <script>
         function validateForm() {
-            const name = document.getElementById("name").value;
-            const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
-            const countryCode = document.getElementById("country_code").value;
-            const phone = document.getElementById("phone").value;
-            const country = document.getElementById("country").value;
-            const state = document.getElementById("state").value;
-            const city = document.getElementById("city").value;
+            const confirmPassword = document.getElementById("confirm_password").value;
 
-            if (!name || !email || !password || !countryCode || !phone || !country || !state || !city) {
-                alert("Please fill out all fields.");
+            if (password !== confirmPassword) {
+                alert("Passwords do not match.");
                 return false;
             }
             return true;
         }
     </script>
-    <script src="register.js"></script>
 </body>
 </html>
