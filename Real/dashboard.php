@@ -429,6 +429,33 @@ if  (!isset($_SESSION['user_id'])){
         let farmName;
         let farmToken;
         let farm_list;
+
+        async function fetchData(farmToken) {
+            try {
+                const response = await fetch('get_data.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `farm_token=${farmToken}&farm_range=current`,
+                });
+
+                const data = await response.json();
+
+                updateStatus(data.status === 'success' ? 'online' : 'offline');
+
+                if (data.status === 'success') {
+                    updateMeter('ph', data.data.ph_value, 14, 5, 9);
+                    updateMeter('salinity', data.data.salinity, 50, 28, 35);
+                    updateMeter('temperature', data.data.temperature, 50, -Infinity, 32);
+                    updateMeter('light-intensity', data.data.light_intensity, 1000);
+                    updateMeter('water-level', data.data.water_level || 0, 200);
+                } else {
+                    resetMeters();
+                }
+            } catch {
+                updateStatus('offline');
+                resetMeters();
+            }
+        }
         async function fetchFarmData() {
             farm_list = document.getElementsByClassName("farm");
             const farmsArray = Array.from(farm_list);
