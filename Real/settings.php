@@ -35,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute(['new_name' => $new_username, 'user_id' => $user_id]);
         $_SESSION['message'] = "Username updated successfully.";
         header("Location: " . $_SERVER['PHP_SELF']);
+        exit;
     }
 
     // Update password if old password is correct and new password is provided
@@ -52,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute(['new_password' => $new_password, 'user_id' => $user_id]);
             $_SESSION['message'] = "Password updated successfully.";
             header("Location: " . $_SERVER['PHP_SELF']);
+            exit;
         }
     }
 }
