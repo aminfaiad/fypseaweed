@@ -231,19 +231,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = [
                 'status' => 'success',
                 'average' => array_map(fn($row) => [
-                    'ph' => $row['avg_ph'],
+                    'ph_value' => $row['avg_ph'],
                     'temperature' => $row['avg_temp'],
                     'salinity' => $row['avg_salinity'],
                     'light_intensity' => $row['avg_light']
                 ], $data),
                 'min' => array_map(fn($row) => [
-                    'ph' => $row['min_ph'],
+                    'ph_value' => $row['min_ph'],
                     'temperature' => $row['min_temp'],
                     'salinity' => $row['min_salinity'],
                     'light_intensity' => $row['min_light']
                 ], $data),
                 'max' => array_map(fn($row) => [
-                    'ph' => $row['max_ph'],
+                    'ph_value' => $row['max_ph'],
                     'temperature' => $row['max_temp'],
                     'salinity' => $row['max_salinity'],
                     'light_intensity' => $row['max_light']
