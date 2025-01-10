@@ -2,11 +2,15 @@
 // Include the database connection file
 require_once 'database.php'; // Ensure this path is correct based on your project structure
 
-// Check if POST values are set
-if (isset($_POST['farm_token'], $_POST['current_water_level'], $_POST['new_water_level'])) {
-    $farmToken = $_POST['farm_token'];
-    $currentWaterLevel = floatval($_POST['current_water_level']);
-    $newWaterLevel = floatval($_POST['new_water_level']);
+// Get the raw input data
+$rawInput = file_get_contents("php://input");
+$inputData = json_decode($rawInput, true); // Decode JSON input to an associative array
+
+// Check if JSON decoding was successful and required fields are present
+if (json_last_error() === JSON_ERROR_NONE && isset($inputData['farm_token'], $inputData['current_water_level'], $inputData['new_water_level'])) {
+    $farmToken = $inputData['farm_token'];
+    $currentWaterLevel = floatval($inputData['current_water_level']);
+    $newWaterLevel = floatval($inputData['new_water_level']);
 
     try {
         // Calculate the difference
@@ -51,10 +55,10 @@ if (isset($_POST['farm_token'], $_POST['current_water_level'], $_POST['new_water
         ]);
     }
 } else {
-    // Return error if required POST values are missing
+    // Return error if input is invalid or required fields are missing
     echo json_encode([
         'status' => 'error',
-        'message' => 'Invalid input. Please provide farm_token, current_water_level, and new_water_level.'
+        'message' => 'Invalid input. Please provide farm_token, current_water_level, and new_water_level in JSON format.'
     ]);
 }
 ?>
