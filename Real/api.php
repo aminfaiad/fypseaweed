@@ -45,13 +45,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     
         // Insert data into farm_data table
-        $stmt = $pdo->prepare("INSERT INTO farm_data (farm_token, ph_value, temperature, salinity, light_intensity, time) 
-                               VALUES (:farm_token, :ph_value, :temperature, :salinity, :light_intensity, :time)");
+        $stmt = $pdo->prepare("INSERT INTO farm_data (farm_token, ph_value, temperature, salinity, light_intensity,water_level, time) 
+                               VALUES (:farm_token, :ph_value, :temperature, :salinity, :light_intensity,:water_level, :time)");
         $stmt->bindParam(':farm_token', $farmToken);
         $stmt->bindParam(':ph_value', $phValue);
         $stmt->bindParam(':temperature', $temperature);
         $stmt->bindParam(':salinity', $salinity);
         $stmt->bindParam(':light_intensity', $lightIntensity);
+        $stmt->bindParam(':water_level', $currWaterLevel);
         $stmt->bindParam(':time', $currentTime);
 
         if ($stmt->execute()) {
