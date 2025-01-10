@@ -33,24 +33,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($new_username !== $user['name']) {
         $stmt = $pdo->prepare("UPDATE users SET name = :new_name WHERE user_id = :user_id");
         $stmt->execute(['new_name' => $new_username, 'user_id' => $user_id]);
-        $_SESSION['message'] .= "Username updated successfully.";
+        $_SESSION['message'] = "Username updated successfully.";
         header("Location: " . $_SERVER['PHP_SELF']);
     }
 
     // Update password if old password is correct and new password is provided
     if (!empty($old_password) && !empty($new_password) && !empty($confirm_password)) {
         if ($old_password !== $user['password']) {
-            $_SESSION['message'] .= "Old password is incorrect.<br>";
+            $_SESSION['message'] = "Old password is incorrect.<br>";
         } elseif ($new_password !== $confirm_password) {
-            $_SESSION['message'] .= "New password and confirm password do not match.<br>";
+            $_SESSION['message'] = "New password and confirm password do not match.<br>";
         } elseif ($new_password === $old_password) {
-            $_SESSION['message'] .= "New password cannot be the same as the old password.<br>";
+            $_SESSION['message'] = "New password cannot be the same as the old password.<br>";
         } elseif (strlen($new_password) < 8) {
-            $_SESSION['message'] .= "New password must be at least 8 characters long.<br>";
+            $_SESSION['message'] = "New password must be at least 8 characters long.<br>";
         } else {
             $stmt = $pdo->prepare("UPDATE users SET password = :new_password WHERE user_id = :user_id");
             $stmt->execute(['new_password' => $new_password, 'user_id' => $user_id]);
-            $_SESSION['message'] .= "Password updated successfully.";
+            $_SESSION['message'] = "Password updated successfully.";
             header("Location: " . $_SERVER['PHP_SELF']);
         }
     }
