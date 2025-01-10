@@ -784,7 +784,7 @@ if  (!isset($_SESSION['user_id'])){
 
       if (!isNaN(numericValue)) {
         closeModal("inputModal");
-        funcA(numericValue);
+        updateWaterLevel(numericValue);
       } else {
         alert("Please enter a valid numeric value.");
       }
@@ -795,11 +795,38 @@ if  (!isset($_SESSION['user_id'])){
       document.getElementById(modalId).style.display = "none";
     }
 
-    // Placeholder for your custom function
-    function funcA(value) {
-      alert(`Calibration successful with value: ${value}`);
-      console.log(`funcA executed with value: ${value}`);
-    }
+   
+
+    function updateWaterLevel(new_water_level) {
+    // Prepare the data to be sent
+    current_water_level = document.getElementById("water-level-value").innerHTML 
+    const postData = {
+        farm_token: farmToken,
+        current_water_level: current_water_level,
+        new_water_level: new_water_level
+    };
+
+    // Send the POST request using Fetch API
+    fetch('update_water_level.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json' // Set the content type to JSON
+        },
+        body: JSON.stringify(postData) // Convert the data to JSON format
+    })
+    .then(response => response.json()) // Parse the JSON response
+    .then(data => {
+        if (data.status === 'success') {
+            console.log('Water level updated successfully:', data);
+        } else {
+            console.error('Error updating water level:', data.message);
+        }
+    })
+    .catch(error => {
+        console.error('An error occurred:', error);
+    });
+}
+
 
     </script>
 </body>

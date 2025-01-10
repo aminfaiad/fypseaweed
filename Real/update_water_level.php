@@ -22,6 +22,9 @@ if (isset($_POST['farm_token'], $_POST['current_water_level'], $_POST['new_water
             // Add the difference to farm_max_water_level
             $updatedMaxWaterLevel = $farm['farm_max_water_level'] + $difference;
 
+            // Ensure the updated max water level is within the range 0 to 199
+            $updatedMaxWaterLevel = max(0, min(199, $updatedMaxWaterLevel));
+
             // Update the farm_max_water_level in the database
             $updateQuery = $pdo->prepare("UPDATE farms SET farm_max_water_level = :updated_max_water_level WHERE farm_token = :farm_token");
             $updateQuery->bindParam(':updated_max_water_level', $updatedMaxWaterLevel);
