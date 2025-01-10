@@ -406,7 +406,7 @@ if  (!isset($_SESSION['user_id'])){
         <aside id="image-container">
             <h2 class="section-title">Latest Image:</h2>
             <img id="last-image" src="uploads/default.png" alt="Farm Overview Image">
-            <h2>"AI Insight:"</h2>
+            <h2>AI Insight:</h2>
             <div id="ai-insight" class="ai-insight">Waiting for AI insight...</div>
         </aside>
     </div>
