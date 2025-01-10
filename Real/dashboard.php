@@ -314,6 +314,19 @@ if  (!isset($_SESSION['user_id'])){
         #image-container .section-title {
             position: absolute;
         }
+
+        #ai-insight {
+        margin-top: 10px;
+        padding: 10px;
+        font-size: 14px;
+        font-family: Arial, sans-serif;
+        color: #333;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        text-align: center;
+        }
+
         }
         
     </style>
@@ -393,7 +406,7 @@ if  (!isset($_SESSION['user_id'])){
         <aside id="image-container">
             <h2 class="section-title">Latest Image:</h2>
             <img id="last-image" src="uploads/default.png" alt="Farm Overview Image">
-            <textarea id="ai-insight" readonly>Waiting for AI insight...</textarea>
+            <div id="ai-insight" class="ai-insight">Waiting for AI insight...</div>
         </aside>
     </div>
         </div>
