@@ -391,8 +391,9 @@ if  (!isset($_SESSION['user_id'])){
         </main>
 
         <aside id="image-container">
-            <h2 class="section-title">Latest image:</h2>
+            <h2 class="section-title">Latest Image:</h2>
             <img id="last-image" src="uploads/default.png" alt="Farm Overview Image">
+            <textarea id="ai-insight" readonly>Waiting for AI insight...</textarea>
         </aside>
     </div>
         </div>
@@ -529,60 +530,44 @@ if  (!isset($_SESSION['user_id'])){
             }
         }
         async function fetchImage(farmToken) {
-            try {
-                // Fetch farm data from the backend
-                const response = await fetch('get_img.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `farm_token=${farmToken}`,
-                });
+        try {
+            // Fetch farm data from the backend
+            const response = await fetch('get_img.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `farm_token=${farmToken}`,
+            });
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch farm data');
-                }
-                const json_response = await response.json();
-                const img_url =json_response.image_path;
-                console.log(json_response);
-                if (json_response.status == "error"){
-                    console.log("No image found");
-                    document.getElementById("last-image").src= "uploads/default.png";
-                    return;
-                }
-                
-                document.getElementById("last-image").src= img_url;
-
-            } catch (error) {
-                console.error('Error fetching farm data:', error);
-                //document.getElementById("status-bar").innerText = "Error fetching farm data";
+            if (!response.ok) {
+                throw new Error('Failed to fetch farm data');
             }
-        }
+            const json_response = await response.json();
+            const img_url = json_response.image_path;
+            console.log(json_response);
 
-        async function fetchData(farmToken) {
-            try {
-                const response = await fetch('get_data.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `farm_token=${farmToken}&farm_range=current`,
-                });
-
-                const data = await response.json();
-
-                updateStatus(data.status === 'success' ? 'online' : 'offline');
-
-                if (data.status === 'success') {
-                    updateMeter('ph', data.data.ph_value, 14, 5, 9);
-                    updateMeter('salinity', data.data.salinity, 50, 28, 35);
-                    updateMeter('temperature', data.data.temperature, 50, -Infinity, 32);
-                    updateMeter('light-intensity', data.data.light_intensity, 1000);
-                    updateMeter('water-level', data.data.water_level || 0, 200);
-                } else {
-                    resetMeters();
-                }
-            } catch {
-                updateStatus('offline');
-                resetMeters();
+            if (json_response.status === "error") {
+                console.log("No image found");
+                document.getElementById("last-image").src = "uploads/default.png";
+                document.getElementById("ai-insight").value = "There's yet to have AI insight or waiting.";
+                return;
             }
+
+            // Update image
+            document.getElementById("last-image").src = img_url;
+
+            // Update AI Insight
+            const aiInsight = json_response.ai_insight;
+            if (aiInsight) {
+                document.getElementById("ai-insight").value = aiInsight;
+            } else {
+                document.getElementById("ai-insight").value = "There's yet to have AI insight or waiting.";
+            }
+
+        } catch (error) {
+            console.error('Error fetching farm data:', error);
+            document.getElementById("ai-insight").value = "Error fetching AI insight.";
         }
+    }
 
         function updateStatus(status) {
             const statusBar = document.getElementById("status-bar");
