@@ -406,6 +406,7 @@ if  (!isset($_SESSION['user_id'])){
         <aside id="image-container">
             <h2 class="section-title">Latest Image:</h2>
             <img id="last-image" src="uploads/default.png" alt="Farm Overview Image">
+            <h2>"AI Insight:"</h2>
             <div id="ai-insight" class="ai-insight">Waiting for AI insight...</div>
         </aside>
     </div>
@@ -561,7 +562,7 @@ if  (!isset($_SESSION['user_id'])){
         if (json_response.status === "error") {
             console.log("No image found");
             document.getElementById("last-image").src = "uploads/default.png";
-            document.getElementById("ai-insight").innerText = "There's yet to have AI insight or waiting.";
+            document.getElementById("ai-insight").innerText = "There's yet to have AI insight";
             return;
         }
 
@@ -573,7 +574,7 @@ if  (!isset($_SESSION['user_id'])){
         if (aiInsight) {
             document.getElementById("ai-insight").innerText = aiInsight;
         } else {
-            document.getElementById("ai-insight").innerText = "There's yet to have AI insight or waiting.";
+            document.getElementById("ai-insight").innerText = "There's yet to have AI insight";
         }
     } catch (error) {
         console.error('Error fetching farm data:', error);
