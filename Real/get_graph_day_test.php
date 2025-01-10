@@ -2,7 +2,7 @@
 //$_POST['farm_token'] = "7f53fc39e3f325a2537d79945c45d1e1"; //local
 //$_POST['type'] = "temperature";    //salinity/light_intensity/ph_value/temperature
 
-$_POST['farm_token'] = "6a208f040cc1e8f29e87ce75263186f4";
+$_POST['farm_token'] = "1fadca58302f2e05d10f2b14da027cae";
 $_POST['type'] = "ph_value";
 if (!isset($_POST['farm_token']) ) {
     // Error response
