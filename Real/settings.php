@@ -32,7 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($new_username !== $user['name']) {
         $stmt = $pdo->prepare("UPDATE users SET name = :new_name WHERE user_id = :user_id");
         $stmt->execute(['new_name' => $new_username, 'user_id' => $user_id]);
-        $message .= "Username updated successfully.<br>";
+        $message .= "Username updated successfully.";
+        header("Location: " . $_SERVER['PHP_SELF']);
     }
 
     // Update password if old password is correct and new password is provided
@@ -48,7 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $stmt = $pdo->prepare("UPDATE users SET password = :new_password WHERE user_id = :user_id");
             $stmt->execute(['new_password' => $new_password, 'user_id' => $user_id]);
-            $message .= "Password updated successfully.<br>";
+            $message .= "Password updated successfully.";
+            header("Location: " . $_SERVER['PHP_SELF']);
         }
     }
 }
