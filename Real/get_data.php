@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $dateTime->modify('-30 seconds');
             $timeThreshold = $dateTime->format('Y-m-d H:i:s');
 
-            $stmt = $pdo->prepare("SELECT ph_value, temperature, salinity, light_intensity 
+            $stmt = $pdo->prepare("SELECT ph_value, temperature, salinity, light_intensity, water_level 
                                    FROM farm_data 
                                    WHERE farm_token = :farm_token AND time >= :time_threshold
                                    ORDER BY time DESC 
@@ -117,11 +117,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         
 
-     
-            //$query .= " GROUP BY FLOOR(UNIX_TIMESTAMP(`time`) / (CASE 
-             //           WHEN :farm_range = 'day' THEN 3600 
-              //          WHEN :farm_range = 'week' THEN 86400 
-               //       END))";
         
 
         $query .= " ORDER BY time";
@@ -131,9 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':farm_token', $farmToken);
         $stmt->bindParam(':time_frame', $timeFrame);
 
-        if (!$customGrouping) {
-            //$stmt->bindParam(':farm_range', $farmRange);
-        }
+   
 
         $stmt->execute();
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -233,8 +226,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             }
             
-            //print_r($data[1]);
-
+           
             // Build result
             $result = [
                 'status' => 'success',
