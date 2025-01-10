@@ -40,13 +40,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Update password if old password is correct and new password is provided
     if (!empty($old_password) && !empty($new_password) && !empty($confirm_password)) {
         if ($old_password !== $user['password']) {
-            $_SESSION['message'] = "Old password is incorrect.<br>";
+            $_SESSION['message'] = "Old password is incorrect.";
         } elseif ($new_password !== $confirm_password) {
-            $_SESSION['message'] = "New password and confirm password do not match.<br>";
+            $_SESSION['message'] = "New password and confirm password do not match.";
         } elseif ($new_password === $old_password) {
-            $_SESSION['message'] = "New password cannot be the same as the old password.<br>";
+            $_SESSION['message'] = "New password cannot be the same as the old password.";
         } elseif (strlen($new_password) < 8) {
-            $_SESSION['message'] = "New password must be at least 8 characters long.<br>";
+            $_SESSION['message'] = "New password must be at least 8 characters long.";
         } else {
             $stmt = $pdo->prepare("UPDATE users SET password = :new_password WHERE user_id = :user_id");
             $stmt->execute(['new_password' => $new_password, 'user_id' => $user_id]);
@@ -236,3 +236,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </script>
 </body>
 </html>
+
+
+<?php
+$_SESSION["message"] = "";
+?>
