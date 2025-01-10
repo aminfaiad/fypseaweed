@@ -543,44 +543,44 @@ if  (!isset($_SESSION['user_id'])){
             }
         }
         async function fetchImage(farmToken) {
-        try {
-            // Fetch farm data from the backend
-            const response = await fetch('get_img.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `farm_token=${farmToken}`,
-            });
+    try {
+        // Fetch image and AI insight data from the backend
+        const response = await fetch('get_img.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `farm_token=${farmToken}`,
+        });
 
-            if (!response.ok) {
-                throw new Error('Failed to fetch farm data');
-            }
-            const json_response = await response.json();
-            const img_url = json_response.image_path;
-            console.log(json_response);
-
-            if (json_response.status === "error") {
-                console.log("No image found");
-                document.getElementById("last-image").src = "uploads/default.png";
-                document.getElementById("ai-insight").value = "There's yet to have AI insight or waiting.";
-                return;
-            }
-
-            // Update image
-            document.getElementById("last-image").src = img_url;
-
-            // Update AI Insight
-            const aiInsight = json_response.ai_insight;
-            if (aiInsight) {
-                document.getElementById("ai-insight").value = aiInsight;
-            } else {
-                document.getElementById("ai-insight").value = "There's yet to have AI insight or waiting.";
-            }
-
-        } catch (error) {
-            console.error('Error fetching farm data:', error);
-            document.getElementById("ai-insight").value = "Error fetching AI insight.";
+        if (!response.ok) {
+            throw new Error('Failed to fetch farm data');
         }
+
+        const json_response = await response.json();
+        const img_url = json_response.image_path;
+
+        if (json_response.status === "error") {
+            console.log("No image found");
+            document.getElementById("last-image").src = "uploads/default.png";
+            document.getElementById("ai-insight").innerText = "There's yet to have AI insight or waiting.";
+            return;
+        }
+
+        // Update the image source
+        document.getElementById("last-image").src = img_url;
+
+        // Update AI Insight
+        const aiInsight = json_response.ai_insight;
+        if (aiInsight) {
+            document.getElementById("ai-insight").innerText = aiInsight;
+        } else {
+            document.getElementById("ai-insight").innerText = "There's yet to have AI insight or waiting.";
+        }
+    } catch (error) {
+        console.error('Error fetching farm data:', error);
+        document.getElementById("ai-insight").innerText = "Error fetching AI insight.";
     }
+}
+
 
         function updateStatus(status) {
             const statusBar = document.getElementById("status-bar");
