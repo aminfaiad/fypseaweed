@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if (!$data){
-            $data = [
+            $data = [[
                 'time_label' => date('Y-m-d H:00:00'), // Current time rounded to the nearest hour
                 'avg_ph' => null,
                 'min_ph' => null,
@@ -145,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'max_salinity' => null,
                 'avg_light' => null,
                 'min_light' => null,
-                'max_light' => null,
+                'max_light' => null,]
             ];
         }
 
