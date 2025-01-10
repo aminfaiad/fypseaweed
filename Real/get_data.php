@@ -131,6 +131,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute();
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        if (!$data){
+            $data = [
+                'time_label' => date('Y-m-d H:00:00'), // Current time rounded to the nearest hour
+                'avg_ph' => null,
+                'min_ph' => null,
+                'max_ph' => null,
+                'avg_temp' => null,
+                'min_temp' => null,
+                'max_temp' => null,
+                'avg_salinity' => null,
+                'min_salinity' => null,
+                'max_salinity' => null,
+                'avg_light' => null,
+                'min_light' => null,
+                'max_light' => null,
+            ];
+        }
+
         // Process data
         if ($data) {
             $timeLabels = array_column($data, 'time_label');
