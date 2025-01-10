@@ -731,7 +731,9 @@ if  (!isset($_SESSION['user_id'])){
             if (status === "online") {
                 statusBar.className = "status-bar online";
                 statusBar.innerText = "Online";
+                document.getElementsByClassName("calibrate-button")[0].removeAttribute("disabled")
             } else {
+                document.getElementsByClassName("calibrate-button")[0].setAttribute("disabled","")
                 statusBar.className = "status-bar offline";
                 statusBar.innerText = "Offline";
             }
