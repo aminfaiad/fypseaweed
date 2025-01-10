@@ -310,7 +310,11 @@ if  (!isset($_SESSION['user_id'])){
       transition: background-color 0.3s ease;
     }
 
-    .calibrate-button :disabled {
+    .calibrate-button:disabled {
+      background-color:rgb(54, 54, 54);
+    }
+
+    .calibrate-button:disabled:hover {
       background-color:rgb(54, 54, 54);
     }
 
