@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $salinity = trim($_POST['salinity']);
     $lightIntensity = trim($_POST['light_intensity']);
     $currentTime = date('Y-m-d H:i:s'); // Get current time in datetime format
+    $sonicdistance = trim($_POST["sonic_distance"]);
 
     // Validate required fields
     if (empty($farmToken) || empty($phValue) || empty($temperature) || empty($salinity) || empty($lightIntensity)) {
@@ -19,16 +20,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
     try {
-        // Check if the farm exists
-        $checkFarmStmt = $pdo->prepare("SELECT COUNT(*) AS farm_exists FROM farms WHERE farm_token = :farm_token");
+        // Check if the farm exists and fetch max water level
+        $checkFarmStmt = $pdo->prepare("
+        SELECT COUNT(*) AS farm_exists, farm_max_water_level 
+        FROM farms 
+        WHERE farm_token = :farm_token
+        ");
         $checkFarmStmt->bindParam(':farm_token', $farmToken);
         $checkFarmStmt->execute();
-        $farmExists = $checkFarmStmt->fetch(PDO::FETCH_ASSOC)['farm_exists'];
+        $farmData = $checkFarmStmt->fetch(PDO::FETCH_ASSOC);
+
+        $farmExists = $farmData['farm_exists'];
 
         if (!$farmExists) {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid farm.']);
-            exit;
+        echo json_encode(['status' => 'error', 'message' => 'Invalid farm.']);
+        exit;
         }
+
+        // Fetch the max water level
+        $farmMaxWaterLevel = $farmData['farm_max_water_level'];
+
+        $currWaterLevel = $farmMaxWaterLevel - $sonicdistance;
     
 
     
